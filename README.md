@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mastermind in React
+
+A project building the classic code-breaking game [Mastermind](https://en.wikipedia.org/wiki/Mastermind_(board_game)) using React and Next.js. The focus is on **test-driven development (TDD)**: we write tests first, then write the code to make them pass.
+
+---
+
+## Project Structure
+
+```
+react-mantismind/
+├── app/                  # Next.js app directory
+│   ├── page.tsx          # Root page / entry point
+│   ├── layout.tsx        # App shell
+│   ├── globals.css       # Global styles (Tailwind)
+│   ├── constants.ts      # Shared constants (Colors enum, etc.)
+│   └── gameLogic.ts      # Pure game logic (win conditions, feedback, etc.)
+├── tests/                # Vitest test files
+│   ├── gamelogic.test.ts # Tests for game logic
+│   └── test.test.ts      # Scaffolding / example tests
+├── SPEC.md               # Full game specification
+└── README.md             # This file
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and run the dev server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Running Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+```
 
-## Learn More
+Tests are run with [Vitest](https://vitest.dev). Test files live in `tests/`.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Recap
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 5/26/2026 all together
 
-## Deploy on Vercel
+- Set up the Next.js app
+- Added Vitest and created the initial test file structure
+- Wrote the first test: win-condition validation in `tests/gamelogic.test.ts`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Todos for Next Meeting
+
+- [ ] Review the [Vitest docs](https://vitest.dev) so you're comfortable with the test runner
+- [ ] (Optional) Add comments to `tests/gamelogic.test.ts` describing what tests still need to be written
+- [ ] (Optional) Take a stab at a UI mockup in Figma or Claude Design
+
+
+## Work done outside of meetings
+
+- list them here with a date
