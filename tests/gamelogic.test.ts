@@ -57,38 +57,41 @@ describe('Guess/Submission Validation', () => {
 })
 
 
-// when they click a color button, the guess correctly inputs/is modified accordingly
+//MAYA when they click a color button, the guess correctly inputs to currentGuess/is modified accordingly
 test('', () => {})
 
-// delete function removes last guess in guess list
+//MAYA delete function removes last guess in guess list
 test('When the ', () => {})
 
-// If delete when guess length is 0, throw error
+//DYLAN If delete when guess length is 0, throw error
 
 
-// make sure feedback for each pip is correct --> black & white accordingly
-  // likely more than 1 test
-  // no feedback for wrong color/place
-test('', () => {})
+describe('Feedback', () => {
+  beforeEach(() => {
+  })
+  //VAL make sure feedback for each pip is correct --> black & white accordingly
+    // likely more than 1 test
+    // no feedback for wrong color/place
+    // make sure feedback doesn't duplicate pips (i.e. black then white pip for 1 color)
+    // make sure feedback is out of order
+  test('', () => {})
 
-// make sure feedback doesn't duplicate pips (i.e. black then white pip for 1 color)
-
-// make sure feedback is out of order
+})
 
 
-// make sure the user cannot edit past guesses
+//BO make sure the user cannot edit past guesses
 
-// user cannot guess during an active process, pips are locked while feedback is generated
+//BO user cannot guess during an active process, pips are locked while feedback is generated
 
-// database empty on start
+//AUTUMN game state reset on start
 
-// Submit function kicks off feedback generation
+//SYDNEY Submit function kicks off feedback generation
 
-// Game state resets on (re)start
+//SYDNEY Game state resets on (re)start
   // correct answer is randomized
   // Ensure that the answer is created on game start
 
-// A submission cannot contain invalid colors
+//AUTUMN A submission cannot contain invalid colors
 
 
 /* Not game logic (UI) */
