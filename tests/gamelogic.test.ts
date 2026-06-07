@@ -1,8 +1,9 @@
 import { describe, expect, test } from 'vitest'
 
-import { Colors } from  "app/constants.ts"
+import { Colors, InProgress } from  "app/constants.ts"
 import { Guess } from "app/types.ts"
-import { checkWinCondition, isValidGuess } from "app/gameLogic.ts"
+import { checkWinCondition, isValidGuess, updateGuessHistory } from "app/gameLogic.ts"
+import { beforeEach } from 'node:test'
 
 
 describe('Win/Lose Condition Tests', () => {
@@ -80,8 +81,36 @@ describe('Feedback', () => {
 
 
 //BO make sure the user cannot edit past guesses
+describe('Unable to edit game state', () => {
+  beforeEach(() => {
+    const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green]
+    const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    const guessHistory: Guess[] = [guessA, guessB]
+  });
+
+  test('cannot re-set a guess', () => {
+    // setGuess(guessHistory[1], guessA); assuming there will be a setter method with a global iterator?? so that we cannot pass in the index we want to 
+    guessHistory[1] = guessA; //try to hard code changing guess history -- this should fail silent (?)
+    expect(guessHistory[1].toEqual(guessB));
+  });
+
+});
 
 //BO user cannot guess during an active process, pips are locked while feedback is generated
+//boolean state management ?? otherwise it'd be a cypress test
+describe('Unable to edit game state during an active process', () => {
+  beforeEach(() => {
+    const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green];
+    const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
+    const guessHistory: Guess[] = [guessA, guessB];
+    const inProgress: InProgress = true; //bool
+  });
+
+  test('cannot update a guess while InProgress is true', () => {
+    let guessAttempt = updateGuessHistory(guessA);
+    expect(guessAttempt).toThrow();
+  });
+});
 
 //AUTUMN game state reset on start
 
