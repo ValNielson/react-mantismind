@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest'
 
 import { Colors, InProgress } from  "app/constants.ts"
 import { Guess } from "app/types.ts"
-import { checkWinCondition, isValidGuess, updateGuessHistory } from "app/gameLogic.ts"
+import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor } from "app/gameLogic.ts"
 import { beforeEach } from 'node:test'
 
 
@@ -57,22 +57,47 @@ describe('Guess Construction', () => {
   })
 
   //MAYA when they click a color button, the guess correctly inputs to currentGuess/is modified accordingly
-  test('', () => {})
+  test('', () => {
+    let newGuess: Guess = [Colors.Red]
+    selectColor(newGuess)
+    expect(newGuess[0]).toEqual(Colors.Green)
+    expect(newGuess[1]).toEqual(Colors.Red)
+    expect(newGuess.length).toEqual(2)
+    selectColor(newGuess)
+    expect(newGuess[0]).toEqual(Colors.Green)
+    expect(newGuess[1]).toEqual(Colors.Red)
+    expect(newGuess[2]).toEqual(Colors.Red)
+    expect(newGuess.length).toEqual(3)
+  })
 
   //MAYA delete function removes last selected color in guess
   test('When a user chooses delete the last selected color in the current guess is removed', () => {
-      let newGuess: Guess = [Colors.Red, Colors.Red, Colors.Red, Colors.Red]
-      updateGuessHistory(newGuess)
-      expect(useGameState().gameHistory[0]).toEqual(answer)
-      expect(useGameState().gameHistory[1]).toEqual(guess)
-      expect(useGameState().gameHistory[2]).toEqual(guess)
-      expect(useGameState().gameHistory[3]).toEqual(newGuess)
+      deleteSelection(guess)
+      expect(guess[0]).toEqual(Colors.Green)
+      expect(guess[1]).toEqual(Colors.Orange)
+      expect(guess[2]).toEqual(Colors.Blue)
+      expect(guess.length).toEqual(3)
+      deleteSelection(guess)
+      expect(guess[0]).toEqual(Colors.Green)
+      expect(guess[1]).toEqual(Colors.Orange)
+      expect(guess.length).toEqual(2)
+      deleteSelection(guess)
+      expect(guess[0]).toEqual(Colors.Green)
+      expect(guess.length).toEqual(1)
+      selectColor(guess, Colors.Red)
+      expect(guess[0]).toEqual(Colors.Green)
+      expect(guess[1]).toEqual(Colors.Red)
+      expect(guess.length).toEqual(2)
+      deleteSelection(guess)
+      expect(guess[0]).toEqual(Colors.Green)
+      expect(guess.length).toEqual(1)
+      deleteSelection(guess)
+      expect(guess.length).toEqual(0)
   })
+
+  //DYLAN If delete when guess length is 0, throw error
+
 })
-
-
-//DYLAN If delete when guess length is 0, throw error
-
 
 describe('Feedback', () => {
   beforeEach(() => {
