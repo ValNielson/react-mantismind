@@ -149,6 +149,23 @@ describe('Unable to edit game state during an active process', () => {
 });
 
 //AUTUMN game state reset on start
+describe("Game state is initialized correctly", () => {
+  const gameState = useGameState();
+
+  test("Guess history initiliazes as empty", () => {
+    expect(gameState.gameHistory).toHaveLength(0);
+  });
+
+  // NOTE: this could be an implementation detail. Is a guess object a fixed-sized array that is pre-filled with undefined/null
+  // or is a guess object an empty array. Are we allowed to work on a guess out of order?
+  test("Current guess is initialized as empty", () => {
+    expect(gameState.currentGuess).toHaveLength(0);
+  });
+
+  test("Number of guesses the player makes is initialized to 0", () => {
+    expect(gameState.guessCount).toEqual(0);
+  });
+});
 
 //SYDNEY Submit function kicks off feedback generation
 
@@ -157,6 +174,29 @@ describe('Unable to edit game state during an active process', () => {
   // Ensure that the answer is created on game start
 
 //AUTUMN A submission cannot contain invalid colors
+describe("A submission cannot contain invalid colors", () => {
+  test("A submission cannot have white pegs", () => {
+    expect(isValidGuess([Colors.Red, Colors.Blue, Colors.Green, Colors.White])).toEqual(false);
+  });
+
+  test("A submission with valid color options should be correct", () => {
+    expect(isValidGuess([Colors.Orange, Colors.Orange, Colors.Orange, Colors.Orange])).toEqual(true);
+  });
+
+  test("A submission cannot have black pegs", () => {
+    expect(isValidGuess([Colors.Orange, Colors.Orange, Colors.Black, Colors.Red])).toEqual(false);
+  });
+
+  test("A submission cannot contain null or undefined elements", () => {
+    expect(isValidGuess([Colors.Orange, Colors.Orange, null, Colors.Red])).toEqual(false);
+    expect(isValidGuess([Colors.Orange, Colors.Orange, undefined, Colors.Red])).toEqual(false);
+  });
+
+  test("A submission cannot contain non-Color elements", () => {
+    expect(isValidGuess([Colors.Orange, Colors.Red, Colors.Blue, 6])).toEqual(false);
+    expect(isValidGuess([Colors.Orange, Colors.Red, Colors.Blue, "orange"])).toEqual(false);
+  });
+})
 
 
 /* Not game logic (UI) */
