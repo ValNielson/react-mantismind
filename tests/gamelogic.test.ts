@@ -27,7 +27,7 @@ describe('Win/Lose Condition Tests', () => {
   })
 })
 
-describe('Guess/Submission Validation', () => {
+describe('Guess Construction', () => {
   beforeEach(() => {
     const answer: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
     const guess: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
@@ -55,14 +55,21 @@ describe('Guess/Submission Validation', () => {
     expect(useGameState().gameHistory[2]).toEqual(guess)
     expect(useGameState().gameHistory[3]).toEqual(newGuess)
   })
+
+  //MAYA when they click a color button, the guess correctly inputs to currentGuess/is modified accordingly
+  test('', () => {})
+
+  //MAYA delete function removes last selected color in guess
+  test('When a user chooses delete the last selected color in the current guess is removed', () => {
+      let newGuess: Guess = [Colors.Red, Colors.Red, Colors.Red, Colors.Red]
+      updateGuessHistory(newGuess)
+      expect(useGameState().gameHistory[0]).toEqual(answer)
+      expect(useGameState().gameHistory[1]).toEqual(guess)
+      expect(useGameState().gameHistory[2]).toEqual(guess)
+      expect(useGameState().gameHistory[3]).toEqual(newGuess)
+  })
 })
 
-
-//MAYA when they click a color button, the guess correctly inputs to currentGuess/is modified accordingly
-test('', () => {})
-
-//MAYA delete function removes last guess in guess list
-test('When the ', () => {})
 
 //DYLAN If delete when guess length is 0, throw error
 
