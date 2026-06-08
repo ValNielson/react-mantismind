@@ -97,10 +97,10 @@ describe('Unable to edit game state', () => {
 
   test('cannot re-set a guess', () => {
     // setGuess(guessHistory[1], guessA); assuming there will be a setter method with a global iterator?? so that we cannot pass in the index we want to 
-    guessHistory[1] = guessA; //try to hard code changing guess history -- this should fail silent (?)
+    updateGuessHistory(1, guessA); //global index management, not ideal but how would we set that we are trying to update a past guess otherwise?
+    guessHistory[1] = guessA; //try to hard code changing guess history -- this should be not allowed
     expect(guessHistory[1].toEqual(guessB));
   });
-
 });
 
 //BO user cannot guess during an active process, pips are locked while feedback is generated
@@ -110,12 +110,16 @@ describe('Unable to edit game state during an active process', () => {
     const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green];
     const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
     const guessHistory: Guess[] = [guessA, guessB];
-    const inProgress: InProgress = true; //bool
+    const inProgress: InProgress = false; //bool - table for meeting, not scalable, but for our proj, does it need to be??
+
+    // OPEN Q: IF WE KNOW OUR APP WONT SCALE, DOES IT NEED TO BE SCALABLE?
+
   });
 
   test('cannot update a guess while InProgress is true', () => {
-    let guessAttempt = updateGuessHistory(guessA);
-    expect(guessAttempt).toThrow();
+    useGameState().inProgress = true;
+    let guessAttempt = updateGuessHistory(guessA); //this would prob throw if inprogress is true
+    expect(guessAttempt).toThrow(); 
   });
 });
 
