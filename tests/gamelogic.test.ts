@@ -95,7 +95,12 @@ describe('Guess Construction', () => {
       expect(guess.length).toEqual(0)
   })
 
-  //DYLAN If delete when guess length is 0, throw error
+  //DYLAN If delete when guess length is 0, no-op
+  test('When a user tries to delete a selected color but there are no selected colors, nothing breaks', () => {
+    const emptyGuess: Guess = []
+    expect(deleteSelection(emptyGuess)).not.toThrow()
+    expect(emptyGuess.length).toEqual(0)
+  })
 
 })
 
