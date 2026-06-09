@@ -2,8 +2,7 @@ import { beforeEach, describe, expect, test } from 'vitest'
 
 import { Colors, InProgress } from  "app/constants.ts"
 import { Guess } from "app/types.ts"
-import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback, submitGuess, usedAllGuesses, useGameState } from "app/gameLogic.ts"
-
+import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback, startGame, submitGuess, usedAllGuesses, useGameState } from "app/gameLogic.ts"
 
 describe('Win/Lose Condition Tests', () => {
   let guess: Guess, answer: Guess, guessHistory: Guess[];
@@ -206,8 +205,10 @@ describe("Game state is initialized correctly", () => {
 
 //SYDNEY Submit function kicks off feedback generation
 describe('Submit function kicks off feedback generation', () => {
+  let guess: Guess;
+
   beforeEach(() => {
-    const guess: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
+    const guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
     useGameState().inProgress = false;
   });
 
@@ -270,6 +271,7 @@ describe("A submission cannot contain invalid colors", () => {
 // Can navigate to page routes
 // no info is given away in the URL slug or in the code inspector
 // Enable submit only when guess length is 4
+// Disable submit button when feedback is being processed
 // Delete button --> when user clicks, last guess is removed
 // Delete button disabled when guess length is 0
 // can't continue guessing in win/loss/end game state
