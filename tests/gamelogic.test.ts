@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest'
 
 import { Colors, InProgress } from  "app/constants.ts"
 import { Guess } from "app/types.ts"
-import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor } from "app/gameLogic.ts"
+import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback } from "app/gameLogic.ts"
 import { beforeEach } from 'node:test'
 
 
@@ -100,15 +100,49 @@ describe('Guess Construction', () => {
 })
 
 describe('Feedback', () => {
+  // Uses GetFeedback which is assumed to be an object setup like { black: number, white: number },
+  // could also be an array but i thought this shape would be easier for keeping things out of order
+  // and general testing and implementation :)
+  let answer: Guess 
   beforeEach(() => {
+    answer = [Colors.Red, Colors.Blue, Colors.Green, Colors.Orange]
   })
   //VAL make sure feedback for each pip is correct --> black & white accordingly
-    // likely more than 1 test
-    // no feedback for wrong color/place
-    // make sure feedback doesn't duplicate pips (i.e. black then white pip for 1 color)
-    // make sure feedback is out of order
-  test('', () => {})
-
+  test('A color in the correct position earns a black pip', () => {
+    const guess: Guess = [Colors.Red, Colors.Yellow, Colors.Yellow, Colors.Yellow]
+    expect(getFeedback(guess, answer)).toEqual({ black: 1, white: 0 })
+  })
+  //VAL make sure feedback for each pip is correct --> black & white accordingly
+  test('A color present in the answer but in the wrong position earns a white pip', () => {
+    const guess: Guess = [Colors.Yellow, Colors.Red, Colors.Yellow, Colors.Yellow]
+    expect(getFeedback(guess, answer)).toEqual({ black: 0, white: 1 })
+  })
+  // VAL no feedback for wrong color/place
+  test('A color not present in the answer earns no pip', () => {
+    const guess: Guess = [Colors.Yellow, Colors.Yellow, Colors.Yellow, Colors.Yellow]
+    expect(getFeedback(guess, answer)).toEqual({ black: 0, white: 0 })
+  })
+  // VAL make sure feedback doesn't duplicate pips (i.e. black then white pip for 1 color)
+  test('A peg that earns a black pip does not also earn a white pip', () => {
+    const guess: Guess = [Colors.Red, Colors.Yellow, Colors.Yellow, Colors.Yellow]
+    const feedback = getFeedback(guess, answer)
+    expect(feedback.black).toEqual(1)
+    expect(feedback.white).toEqual(0)
+    expect(feedback.black + feedback.white).toEqual(1)
+  })
+  // VAL make sure that feedback gives one pip for mutiple of a color
+  test('A repeated color in the guess does not earn more pips', () => {
+    const guess: Guess = [Colors.Red, Colors.Red, Colors.Yellow, Colors.Yellow]
+    const feedback = getFeedback(guess, answer)
+    expect(feedback.black + feedback.white).toEqual(1)
+  })
+    // VAL make sure feedback is out of order
+  test('Feedback pips are not ordered to reveal which position was correct', () => {
+    const guessA: Guess = [Colors.Red,    Colors.Yellow, Colors.Yellow, Colors.Yellow]
+    const guessB: Guess = [Colors.Yellow, Colors.Yellow, Colors.Green,  Colors.Yellow]
+    expect(getFeedback(guessA, answer)).toEqual(getFeedback(guessB, answer))
+    expect(getFeedback(guessA, answer)).toEqual({ black: 1, white: 0 })
+  })
 })
 
 
