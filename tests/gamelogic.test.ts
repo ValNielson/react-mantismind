@@ -1,16 +1,17 @@
-import { describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, test } from 'vitest'
 
 import { Colors, InProgress } from  "app/constants.ts"
 import { Guess } from "app/types.ts"
-import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback } from "app/gameLogic.ts"
-import { beforeEach } from 'node:test'
+import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback, submitGuess, usedAllGuesses, useGameState } from "app/gameLogic.ts"
 
 
 describe('Win/Lose Condition Tests', () => {
+  let guess: Guess, answer: Guess, guessHistory: Guess[];
+
   beforeEach(() => {
-    const answer: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
-    const guess: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
-    const guessHistory: Guess[] = [answer, guess, guess]
+    answer = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guessHistory = [answer, guess, guess]
   })
 
   // win conditions tests
@@ -28,10 +29,12 @@ describe('Win/Lose Condition Tests', () => {
 })
 
 describe('Guess Construction', () => {
+  let guess: Guess, answer: Guess, guessHistory: Guess[];
+
   beforeEach(() => {
-    const answer: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
-    const guess: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
-    const guessHistory: Guess[] = [answer, guess, guess]
+    answer = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guessHistory = [answer, guess, guess]
   })
 
   // add test for making sure that guess is 4 colors can't guess more or less than 4
@@ -153,11 +156,9 @@ describe('Feedback', () => {
 
 //BO make sure the user cannot edit past guesses
 describe('Unable to edit game state', () => {
-  beforeEach(() => {
-    const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green]
-    const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
-    const guessHistory: Guess[] = [guessA, guessB]
-  });
+  const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green]
+  const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+  const guessHistory: Guess[] = [guessA, guessB]
 
   test('cannot re-set a guess', () => {
     // setGuess(guessHistory[1], guessA); assuming there will be a setter method with a global iterator?? so that we cannot pass in the index we want to 
@@ -170,15 +171,12 @@ describe('Unable to edit game state', () => {
 //BO user cannot guess during an active process, pips are locked while feedback is generated
 //boolean state management ?? otherwise it'd be a cypress test
 describe('Unable to edit game state during an active process', () => {
-  beforeEach(() => {
-    const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green];
-    const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
-    const guessHistory: Guess[] = [guessA, guessB];
-    const inProgress: InProgress = false; //bool - table for meeting, not scalable, but for our proj, does it need to be??
+  const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green];
+  const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
+  const guessHistory: Guess[] = [guessA, guessB];
+  const inProgress: InProgress = false; //bool - table for meeting, not scalable, but for our proj, does it need to be??
 
-    // OPEN Q: IF WE KNOW OUR APP WONT SCALE, DOES IT NEED TO BE SCALABLE?
-
-  });
+  // OPEN Q: IF WE KNOW OUR APP WONT SCALE, DOES IT NEED TO BE SCALABLE?
 
   test('cannot update a guess while InProgress is true', () => {
     useGameState().inProgress = true;
