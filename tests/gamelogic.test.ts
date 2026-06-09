@@ -168,10 +168,39 @@ describe("Game state is initialized correctly", () => {
 });
 
 //SYDNEY Submit function kicks off feedback generation
+describe('Submit function kicks off feedback generation', () => {
+  beforeEach(() => {
+    const guess: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
+    useGameState().inProgress = false;
+  });
+
+  test('When a user submits a guess, inProgress is set to true while feedback is generated', () => {
+    submitGuess(guess);
+    expect(useGameState().inProgress).toEqual(true);
+  });
+});
 
 //SYDNEY Game state resets on (re)start
+describe('Game state resets on (re)start', () => {
+  beforeEach(() => {
+    useGameState().guessCount = 5;
+    useGameState().currentGuess = [Colors.Red, Colors.Blue, Colors.Green, Colors.Orange];
+    useGameState().gameHistory = [[Colors.Red, Colors.Red, Colors.Red, Colors.Red]];
+  });
+
   // correct answer is randomized
+  test('Correct answer is randomized on game start', () => {
+    const firstAnswer = startGame();
+    const secondAnswer = startGame();
+    expect(firstAnswer).not.toEqual(secondAnswer);
+  });
+
   // Ensure that the answer is created on game start
+  test('Answer is created on game start', () => {
+    startGame();
+    expect(useGameState().answer).toHaveLength(4);
+  });
+});
 
 //AUTUMN A submission cannot contain invalid colors
 describe("A submission cannot contain invalid colors", () => {
