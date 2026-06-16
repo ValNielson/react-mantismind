@@ -28,3 +28,57 @@ To create the game mastermind in react/next.js.
 - pips are next to each guess row in a 2 by 2
 - guess input interface is clicking a colored dot with the ability to submit a full 4 color guess or undo a color choice in sequence order (so if i hit undo it only undoes the most recently added color)
 - when you win, a dialog appears that says "you win!" and presents a "play again" button or a "go home" button
+
+
+---
+
+## Implementation Notes (added during TDD build — 2026-06-16)
+
+### What was built
+- Pure game logic in `app/gameLogic.ts` (`checkWinCondition`, `isValidGuess`,
+  `generateCode`, `getFeedback`) with shared values in `app/constants.ts`
+  (`Colors`, `ALL_COLORS`, `CODE_LENGTH`, `MAX_GUESSES`, `Pip`).
+- The `Game` UI component in `app/Game.tsx`, wired into `app/page.tsx`.
+- Tests: `tests/gamelogic.test.ts` (logic) and `tests/game.test.tsx`
+  (component behavior). Run with `npm test`.
+
+### Libraries used (instead of building from scratch)
+- `getFeedback` (the black/white pip scorer) is the one non-trivial algorithm.
+  No focused, well-maintained npm package was worth a dependency for ~25 lines,
+  so it uses the standard two-pass Mastermind algorithm (count exact matches,
+  then color-only matches from the remaining unmatched pegs). It is covered by
+  tests, including the tricky duplicate-color cases.
+- Component tests use `@testing-library/react` + `@testing-library/user-event`
+  (industry standard) rather than hand-rolled DOM assertions.
+
+### Assumptions made (where the spec was silent)
+1. **The six colors** are red, orange, yellow, green, blue, purple (none is
+   black or white, per the rules). The spec didn't name them.
+2. **Lose state.** The spec defines a win dialog but not what happens after 10
+   failed guesses. Assumed a symmetric "Game over" dialog that reveals the
+   secret code and offers the same Play Again / Go Home buttons.
+3. **Submit gating.** Submit is disabled until exactly 4 colors are chosen
+   (the rules say a guess can't be more or less than 4). Undo is disabled when
+   the in-progress guess is empty.
+4. **"No more guesses after a win"** (a requirement) is implemented by hiding
+   the entire input area once the game is over.
+5. **Testability seam.** `Game` accepts an optional `initialCode` prop so tests
+   can drive a deterministic game; production (`page.tsx`) renders `<Game />`
+   with no prop, so the code is randomized via `generateCode`.
+6. **"Go Home"** returns to the start screen and discards the current game; the
+   next "Start Game" deals a fresh code.
+
+### Recommended additional tests (not yet implemented)
+- **Logic / property-based:** the number of black + white pips returned by
+  `getFeedback` should never exceed `CODE_LENGTH`, for arbitrary guess/answer
+  pairs (a good fit for `fast-check`).
+- **Logic:** more duplicate-handling permutations for `getFeedback` (e.g.
+  answer with two of a color, guess with three of it in mixed positions).
+- **UI:** feedback pip *ordering* is rendered black-before-white in a row that
+  has both (currently only asserted at the logic layer).
+- **UI:** the win dialog appears immediately and stops further guesses even
+  when the win happens before guess 10 (partially covered; could assert the
+  remaining empty rows stay empty).
+- **UI:** "Play Again" deals a genuinely new code (would require injecting a
+  code generator rather than a fixed `initialCode`).
+- **Accessibility:** keyboard navigation / focus trapping in the end dialog.
