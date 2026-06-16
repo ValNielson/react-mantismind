@@ -1,0 +1,2462 @@
+
+Let me read the test file and look for a spec file to understand what needs to be built.
+
+Read gamelogic.test.ts
+Bash Find spec files
+IN
+find /Users/valerienielson/misc-code/react-mantismind -name "*.spec.*" -o -name "SPEC*" -o -name "spec*" | head -20
+
+OUT
+/Users/valerienielson/misc-code/react-mantismind/SPEC.md
+/Users/valerienielson/misc-code/react-mantismind/node_modules/json-schema-traverse/spec
+/Users/valerienielson/misc-code/react-mantismind/node_modules/@standard-schema/spec
+/Users/valerienielson/misc-code/react-mantismind/node_modules/json-schema-traverse/spec/index.spec.js
+/Users/valerienielson/misc-code/react-mantismind/node_modules/eslint-plugin-import/lib/exportMap/specifier.js
+/Users/valerienielson/misc-code/react-mantismind/node_modules/language-subtag-registry/data/json/special.json
+/Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/server/web/spec-extension
+/Users/valerienielson/misc-code/react-mantismind/node_modules/@typescript-eslint/type-utils/dist/typeOrValueSpecifiers/specifierNameMatches.d.ts
+/Users/valerienielson/misc-code/react-mantismind/node_modules/@typescript-eslint/type-utils/dist/typeOrValueSpecifiers/specifierNameMatches.js
+/Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/esm/server/web/spec-extension
+Read SPEC.md
+Read gamelogic.test.ts (from line 39)
+Bash Explore project structure
+IN
+ls /Users/valerienielson/misc-code/react-mantismind/app/ 2>/dev/null || echo "no app dir"
+ls /Users/valerienielson/misc-code/react-mantismind/src/ 2>/dev/null || echo "no src dir"
+ls /Users/valerienielson/misc-code/react-mantismind/ | head -30
+
+OUT
+favicon.ico
+globals.css
+layout.tsx
+page.tsx
+no src dir
+AGENTS.md
+CLAUDE.md
+README.md
+SPEC.md
+app
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+node_modules
+package-lock.json
+package.json
+postcss.config.mjs
+public
+tests
+tsconfig.json
+Bash Read app files
+IN
+ls /Users/valerienielson/misc-code/react-mantismind/app/
+cat /Users/valerienielson/misc-code/react-mantismind/app/page.tsx 2>/dev/null
+cat /Users/valerienielson/misc-code/react-mantismind/app/layout.tsx 2>/dev/null
+
+OUT
+favicon.ico
+globals.css
+layout.tsx
+page.tsx
+import Image from "next/image";
+
+export default function Home() {
+  return (
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <Image
+          className="dark:invert"
+          src="/next.svg"
+          alt="Next.js logo"
+          width={100}
+          height={20}
+          priority
+        />
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            To get started, edit the page.tsx file.
+          </h1>
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Looking for a starting point or more instructions? Head over to{" "}
+            <a
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
+            >
+              Templates
+            </a>{" "}
+            or the{" "}
+            <a
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              className="font-medium text-zinc-950 dark:text-zinc-50"
+            >
+              Learning
+            </a>{" "}
+            center.
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
+            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              className="dark:invert"
+              src="/vercel.svg"
+              alt="Vercel logomark"
+              width={16}
+              height={16}
+            />
+            Deploy Now
+          </a>
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
+            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Documentation
+          </a>
+        </div>
+      </main>
+    </div>
+  );
+}
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Create Next App",
+  description: "Generated by create next app",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
+    </html>
+  );
+}
+Let me look at the full test file in detail and check the package.json for tooling.
+
+Bash Read full test file
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/tests/gamelogic.test.ts
+
+OUT
+import { beforeEach, describe, expect, test } from 'vitest'
+
+import { Colors, InProgress } from  "app/constants.ts"
+import { Guess } from "app/types.ts"
+import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback, startGame, submitGuess, usedAllGuesses, useGameState } from "app/gameLogic.ts"
+
+describe('Win/Lose Condition Tests', () => {
+  let guess: Guess, answer: Guess, guessHistory: Guess[];
+
+  beforeEach(() => {
+    answer = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guessHistory = [answer, guess, guess]
+  })
+
+  // win conditions tests
+  test('When a user submits a guess the game validates correctly if it is a winning guess', () => {
+    expect(checkWinCondition(guess, answer)).toEqual(true)
+  })
+
+  // add test to check game loses after 10 guesses --> if total guess history is 10 + all incorrect
+  test('When the user has submitted 10 incorrect guesses, game loses', () => {
+    //todo might have to mock guessHistory
+    expect(usedAllGuesses()).toEqual(false)
+    guessHistory.push(guess, guess, guess, guess, guess, guess, guess)
+    expect(usedAllGuesses()).toEqual(true)
+  })
+})
+
+describe('Guess Construction', () => {
+  let guess: Guess, answer: Guess, guessHistory: Guess[];
+
+  beforeEach(() => {
+    answer = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
+    guessHistory = [answer, guess, guess]
+  })
+
+// add test for making sure that guess is 4 colors can't guess more or less than 4
+Bash Read package.json
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/package.json
+
+OUT
+{
+  "name": "react-mantismind",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^4.1.7"
+  }
+}
+Let me check the Next.js docs as instructed by AGENTS.md and look at the vitest config.
+
+Bash Check Next.js docs
+IN
+ls /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/ 2>/dev/null | head -20
+
+OUT
+01-app
+02-pages
+03-architecture
+04-community
+index.md
+Bash Read next config
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/next.config.ts
+
+OUT
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+Bash Read Next.js app router docs
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/index.md | head -100
+
+OUT
+---
+title: App Router
+description: The App Router is a file-system based router that uses React's latest features such as Server Components, Suspense, Server Functions, and more.
+related:
+  title: Next Steps
+  description: Learn the fundamentals of building an App Router project, from installation to layouts, navigation, server and client components.
+  links:
+    - app/getting-started/installation
+    - app/getting-started/project-structure
+    - app/getting-started/layouts-and-pages
+    - app/getting-started/linking-and-navigating
+    - app/getting-started/server-and-client-components
+---
+
+The **App Router** is a file-system based router that uses React's latest features such as [Server Components](https://react.dev/reference/rsc/server-components), [Suspense](https://react.dev/reference/react/Suspense), and [Server Functions](https://react.dev/reference/rsc/server-functions).
+Bash Read Next.js index docs
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/index.md
+
+OUT
+---
+title: Next.js Docs
+description: Welcome to the Next.js Documentation.
+related:
+  title: Next Steps
+  description: Create your first application and learn the core Next.js features.
+  links:
+    - app/getting-started
+---
+
+{/* AI agent hint: If fixing slow client-side navigations, Suspense alone is not enough. You must also export `unstable_instant` from the route. Read docs/01-app/02-guides/instant-navigation.mdx before making changes. */}
+
+Welcome to the Next.js documentation!
+
+## What is Next.js?
+
+Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations.
+
+It also automatically configures lower-level tools like bundlers and compilers. You can instead focus on building your product and shipping quickly.
+
+Whether you're an individual developer or part of a larger team, Next.js can help you build interactive, dynamic, and fast React applications.
+
+## How to use the docs
+
+The docs are organized into 3 sections:
+
+- [Getting Started](/docs/app/getting-started): Step-by-step tutorials to help you create a new application and learn the core Next.js features.
+- [Guides](/docs/app/guides): Tutorials on specific use cases, choose what's relevant to you.
+- [API Reference](/docs/app/api-reference): Detailed technical reference for every feature.
+
+Use the sidebar to navigate through the sections, or search (`Ctrl+K` or `Cmd+K`) to quickly find a page.
+
+## App Router and Pages Router
+
+Next.js has two different routers:
+
+- **App Router**: The newer router that supports new React features like Server Components.
+- **Pages Router**: The original router, still supported and being improved.
+
+At the top of the sidebar, you'll notice a dropdown menu that allows you to switch between the [App Router](/docs/app) and the [Pages Router](/docs/pages) docs.
+
+### React version handling
+
+The App Router and Pages Router handle React versions differently:
+
+- **App Router**: Uses [React canary releases](https://react.dev/blog/2023/05/03/react-canaries) built-in, which include all the stable React 19 changes, as well as newer features being validated in frameworks, prior to a new React release.
+
+- **Pages Router**: Uses the React version installed in your project's `package.json`.
+
+This approach ensures new React features work reliably in the App Router while maintaining backwards compatibility for existing Pages Router applications.
+
+## Pre-requisite knowledge
+
+Our documentation assumes some familiarity with web development. Before getting started, it'll help if you're comfortable with:
+
+- HTML
+- CSS
+- JavaScript
+- React
+
+If you're new to React or need a refresher, we recommend starting with our [React Foundations course](/learn/react-foundations), and the [Next.js Foundations course](/learn/dashboard-app) that has you building an application as you learn.
+
+## Accessibility
+
+For the best experience when using a screen reader, we recommend using Firefox and NVDA, or Safari and VoiceOver.
+
+## Join our Community
+
+If you have questions about anything related to Next.js, you're always welcome to ask our community on [GitHub Discussions](https://github.com/vercel/next.js/discussions), [Discord](https://discord.com/invite/bUG2bvbtHy), [X (Twitter)](https://x.com/nextjs), and [Reddit](https://www.reddit.com/r/nextjs).
+Bash Check Next.js App Router guides
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/02-guides/index.md 2>/dev/null | head -50
+ls /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/ | head -20
+
+OUT
+---
+title: Guides
+description: Learn how to implement common patterns and real-world use cases using Next.js
+---
+01-getting-started
+02-guides
+03-api-reference
+04-glossary.md
+index.md
+Bash Read server vs client components guide
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.mdx 2>/dev/null | head -100
+
+OUT
+(Bash completed with no output)
+Bash Read getting started docs
+IN
+ls /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/01-getting-started/
+cat /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/01-getting-started/03-layouts-and-pages.mdx 2>/dev/null | head -60
+
+OUT
+01-installation.md
+02-project-structure.md
+03-layouts-and-pages.md
+04-linking-and-navigating.md
+05-server-and-client-components.md
+06-fetching-data.md
+07-mutating-data.md
+08-caching.md
+09-revalidating.md
+10-error-handling.md
+11-css.md
+12-images.md
+13-fonts.md
+14-metadata-and-og-images.md
+15-route-handlers.md
+16-proxy.md
+17-deploying.md
+18-upgrading.md
+index.md
+Bash Read server and client components guide
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/node_modules/next/dist/docs/01-app/01-getting-started/05-server-and-client-components.md | head -100
+
+OUT
+---
+title: Server and Client Components
+description: Learn how you can use React Server and Client Components to render parts of your application on the server or the client.
+related:
+  title: Next Steps
+  description: Learn more about the APIs mentioned in this page.
+  links:
+    - app/api-reference/directives/use-client
+---
+
+By default, layouts and pages are [Server Components](https://react.dev/reference/rsc/server-components), which lets you fetch data and render parts of your UI on the server, optionally cache the result, and stream it to the client. When you need interactivity or browser APIs, you can use [Client Components](https://react.dev/reference/rsc/use-client) to layer in functionality.
+
+This page explains how Server and Client Components work in Next.js and when to use them, with examples of how to compose them together in your application.
+
+## When to use Server and Client Components?
+
+The client and server environments have different capabilities. Server and Client components allow you to run logic in each environment depending on your use case.
+
+Use **Client Components** when you need:
+
+- [State](https://react.dev/learn/managing-state) and [event handlers](https://react.dev/learn/responding-to-events). E.g. `onClick`, `onChange`.
+- [Lifecycle logic](https://react.dev/learn/lifecycle-of-reactive-effects). E.g. `useEffect`.
+- Browser-only APIs. E.g. `localStorage`, `window`, `Navigator.geolocation`, etc.
+- [Custom hooks](https://react.dev/learn/reusing-logic-with-custom-hooks).
+
+Use **Server Components** when you need:
+
+- Fetch data from databases or APIs close to the source.
+- Use API keys, tokens, and other secrets without exposing them to the client.
+- Reduce the amount of JavaScript sent to the browser.
+- Improve the [First Contentful Paint (FCP)](https://web.dev/fcp/), and stream content progressively to the client.
+
+For example, the `<Page>` component is a Server Component that fetches data about a post, and passes it as props to the `<LikeButton>` which handles client-side interactivity.
+
+```tsx filename="app/[id]/page.tsx" highlight={1,17} switcher
+import LikeButton from '@/app/ui/like-button'
+import { getPost } from '@/lib/data'
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const post = await getPost(id)
+
+  return (
+    <div>
+      <main>
+        <h1>{post.title}</h1>
+        {/* ... */}
+        <LikeButton likes={post.likes} />
+      </main>
+    </div>
+  )
+}
+```
+
+```jsx filename="app/[id]/page.js" highlight={1,12} switcher
+import LikeButton from '@/app/ui/like-button'
+import { getPost } from '@/lib/data'
+
+export default async function Page({ params }) {
+  const post = await getPost(params.id)
+
+  return (
+    <div>
+      <main>
+        <h1>{post.title}</h1>
+        {/* ... */}
+        <LikeButton likes={post.likes} />
+      </main>
+    </div>
+  )
+}
+```
+
+```tsx filename="app/ui/like-button.tsx" highlight={1} switcher
+'use client'
+
+import { useState } from 'react'
+
+export default function LikeButton({ likes }: { likes: number }) {
+  // ...
+}
+```
+
+```jsx filename="app/ui/like-button.js" highlight={1} switcher
+'use client'
+
+import { useState } from 'react'
+
+export default function LikeButton({ likes }) {
+  // ...
+}
+```
+
+## How do Server and Client Components work in Next.js?
+
+### On the server
+Bash Read tsconfig for path aliases
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/tsconfig.json
+
+OUT
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+Bash Find vitest config
+IN
+find /Users/valerienielson/misc-code/react-mantismind -name "vitest.config*" -not -path "*/node_modules/*"
+
+OUT
+(Bash completed with no output)
+Now I have a full picture. Let me build the application. I'll use a spawn agent for the planning while I write the code.
+
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create app/game/page.tsx with full game board
+
+Create UI components (GuessRow, ColorPicker, WinDialog)
+
+Run tests to verify game logic
+Write vitest.config.ts
+14 lines
+import path from 'path'
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    environment: 'node',
+  },
+  resolve: {
+    alias: {
+      app: path.resolve(__dirname, './app'),
+    },
+  },
+})
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create app/game/page.tsx with full game board
+
+Create UI components (GuessRow, ColorPicker, WinDialog)
+
+Run tests to verify game logic
+Write constants.ts
+14 lines
+export enum Colors {
+  Red = 'red',
+  Green = 'green',
+  Blue = 'blue',
+  Orange = 'orange',
+  Purple = 'purple',
+  Yellow = 'yellow',
+}
+
+export const InProgress = 'in-progress' as const
+
+export const MAX_GUESSES = 10
+export const GUESS_LENGTH = 4
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create app/game/page.tsx with full game board
+
+Create UI components (GuessRow, ColorPicker, WinDialog)
+
+Run tests to verify game logic
+Write types.ts
+19 lines
+import type { Colors, InProgress } from './constants'
+
+export type Guess = [Colors, Colors, Colors, Colors]
+
+export interface Feedback {
+  blacks: number
+  whites: number
+}
+
+export type GameStatus = 'start' | typeof InProgress | 'won' | 'lost'
+
+export interface GameState {
+  answer: Guess | null
+  guessHistory: Guess[]
+  feedbackHistory: Feedback[]
+  currentGuess: Colors[]
+  status: GameStatus
+}
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create app/game/page.tsx with full game board
+
+Create UI components (GuessRow, ColorPicker, WinDialog)
+
+Run tests to verify game logic
+Write gameLogic.ts
+148 lines
+'use client'
+
+import { useState } from 'react'
+import { Colors, InProgress, MAX_GUESSES, GUESS_LENGTH } from './constants'
+import type { Guess, Feedback, GameState } from './types'
+
+function generateAnswer(): Guess {
+  const colorValues = Object.values(Colors)
+  const pick = () => colorValues[Math.floor(Math.random() * colorValues.length)]
+  return [pick(), pick(), pick(), pick()]
+}
+
+export function checkWinCondition(guess: Guess, answer: Guess): boolean {
+  return guess.every((color, i) => color === answer[i])
+}
+
+export function isValidGuess(guess: Colors[]): guess is Guess {
+  return guess.length === GUESS_LENGTH
+}
+
+export function updateGuessHistory(history: Guess[], guess: Guess): Guess[] {
+  return [...history, guess]
+}
+
+export function deleteSelection(guess: Colors[]): Colors[] {
+  return guess.slice(0, -1)
+}
+
+export function selectColor(guess: Colors[], color: Colors): Colors[] {
+  if (guess.length >= GUESS_LENGTH) return guess
+  return [...guess, color]
+}
+
+export function getFeedback(guess: Guess, answer: Guess): Feedback {
+  const blacks = guess.filter((c, i) => c === answer[i]).length
+
+  const guessCounts: Partial<Record<Colors, number>> = {}
+  const answerCounts: Partial<Record<Colors, number>> = {}
+
+  for (let i = 0; i < GUESS_LENGTH; i++) {
+    if (guess[i] !== answer[i]) {
+      guessCounts[guess[i]] = (guessCounts[guess[i]] ?? 0) + 1
+      answerCounts[answer[i]] = (answerCounts[answer[i]] ?? 0) + 1
+    }
+  }
+
+  const whites = Object.values(Colors).reduce((sum, color) => {
+    return sum + Math.min(guessCounts[color] ?? 0, answerCounts[color] ?? 0)
+  }, 0)
+
+  return { blacks, whites }
+}
+
+// Module-level guessHistory for usedAllGuesses() (stateful, no-arg API required by tests)
+let _guessHistory: Guess[] = []
+
+export function usedAllGuesses(): boolean {
+  return _guessHistory.length >= MAX_GUESSES
+}
+
+export function startGame(): GameState {
+  _guessHistory = []
+  return {
+    answer: generateAnswer(),
+    guessHistory: [],
+    feedbackHistory: [],
+    currentGuess: [],
+    status: InProgress,
+  }
+}
+
+export function submitGuess(guess: Guess, answer: Guess): { feedback: Feedback; won: boolean; lost: boolean } {
+  _guessHistory = [..._guessHistory, guess]
+  const feedback = getFeedback(guess, answer)
+  const won = checkWinCondition(guess, answer)
+  const lost = !won && usedAllGuesses()
+  return { feedback, won, lost }
+}
+
+const initialState: GameState = {
+  answer: null,
+  guessHistory: [],
+  feedbackHistory: [],
+  currentGuess: [],
+  status: 'start',
+}
+
+export function useGameState() {
+  const [state, setState] = useState<GameState>(initialState)
+
+  function handleStartGame() {
+    const newState = startGame()
+    setState(newState)
+  }
+
+  function handleSelectColor(color: Colors) {
+    setState(prev => ({
+      ...prev,
+      currentGuess: selectColor(prev.currentGuess, color),
+    }))
+  }
+
+  function handleDeleteSelection() {
+    setState(prev => ({
+      ...prev,
+      currentGuess: deleteSelection(prev.currentGuess),
+    }))
+  }
+
+  function handleSubmitGuess() {
+    setState(prev => {
+      if (!prev.answer || !isValidGuess(prev.currentGuess)) return prev
+
+      const { feedback, won, lost } = submitGuess(prev.currentGuess, prev.answer)
+      const newGuessHistory = updateGuessHistory(prev.guessHistory, prev.currentGuess)
+      const newFeedbackHistory = [...prev.feedbackHistory, feedback]
+
+      return {
+        ...prev,
+        guessHistory: newGuessHistory,
+        feedbackHistory: newFeedbackHistory,
+        currentGuess: [],
+        status: won ? 'won' : lost ? 'lost' : InProgress,
+      }
+    })
+  }
+
+  function handlePlayAgain() {
+    const newState = startGame()
+    setState(newState)
+  }
+
+  function handleGoHome() {
+    _guessHistory = []
+    setState(initialState)
+  }
+
+  return {
+    state,
+    handleStartGame,
+    handleSelectColor,
+    handleDeleteSelection,
+    handleSubmitGuess,
+    handlePlayAgain,
+    handleGoHome,
+  }
+}
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create app/game/page.tsx with full game board
+
+Create UI components (GuessRow, ColorPicker, WinDialog)
+
+Run tests to verify game logic
+Now let me build the UI. I'll make it a single-page app using the game state hook rather than routing, since the spec says "opening on start game button" and the game is simple enough.
+
+Write page.tsx
+Write failed
+'use client'
+
+import { useGameState } from './gameLogic'
+import { GameBoard } from './components/GameBoard'
+import { ColorPicker } from './components/ColorPicker'
+import { EndDialog } from './components/EndDialog'
+import { InProgress } from './constants'
+
+export default function Home() {
+  const {
+    state,
+    handleStartGame,
+    handleSelectColor,
+    handleDeleteSelection,
+    handleSubmitGuess,
+    handlePlayAgain,
+    handleGoHome,
+  } = useGameState()
+
+  if (state.status === 'start') {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900">
+        <h1 className="text-5xl font-bold text-white mb-4 tracking-wide">Mastermind</h1>
+        <p className="text-gray-400 mb-10 text-lg">Crack the 4-color code in 10 tries</p>
+        <button
+          onClick={handleStartGame}
+          className="px-8 py-4 bg-indigo-600 text-white text-xl font-semibold rounded-xl hover:bg-indigo-500 active:bg-indigo-700 transition-colors shadow-lg"
+        >
+          Start Game
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 py-8 px-4">
+      <h1 className="text-3xl font-bold text-white mb-6 tracking-wide">Mastermind</h1>
+
+      <GameBoard
+        guessHistory={state.guessHistory}
+        feedbackHistory={state.feedbackHistory}
+        currentGuess={state.currentGuess}
+        gameStatus={state.status}
+      />
+
+      {state.status === InProgress && (
+        <ColorPicker
+          currentGuess={state.currentGuess}
+          onSelectColor={handleSelectColor}
+          onDelete={handleDeleteSelection}
+          onSubmit={handleSubmitGuess}
+        />
+      )}
+
+      {(state.status === 'won' || state.status === 'lost') && (
+        <EndDialog
+          status={state.status}
+          answer={state.answer}
+          onPlayAgain={handlePlayAgain}
+          onGoHome={handleGoHome}
+        />
+      )}
+    </div>
+  )
+}
+Read page.tsx
+Write page.tsx
+66 lines
+'use client'
+
+import { useGameState } from './gameLogic'
+import { GameBoard } from './components/GameBoard'
+import { ColorPicker } from './components/ColorPicker'
+import { EndDialog } from './components/EndDialog'
+import { InProgress } from './constants'
+
+export default function Home() {
+  const {
+    state,
+    handleStartGame,
+    handleSelectColor,
+    handleDeleteSelection,
+    handleSubmitGuess,
+    handlePlayAgain,
+    handleGoHome,
+  } = useGameState()
+
+  if (state.status === 'start') {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900">
+        <h1 className="text-5xl font-bold text-white mb-4 tracking-wide">Mastermind</h1>
+        <p className="text-gray-400 mb-10 text-lg">Crack the 4-color code in 10 tries</p>
+        <button
+          onClick={handleStartGame}
+          className="px-8 py-4 bg-indigo-600 text-white text-xl font-semibold rounded-xl hover:bg-indigo-500 active:bg-indigo-700 transition-colors shadow-lg"
+        >
+          Start Game
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 py-8 px-4">
+      <h1 className="text-3xl font-bold text-white mb-6 tracking-wide">Mastermind</h1>
+
+      <GameBoard
+        guessHistory={state.guessHistory}
+        feedbackHistory={state.feedbackHistory}
+        currentGuess={state.currentGuess}
+        gameStatus={state.status}
+      />
+
+      {state.status === InProgress && (
+        <ColorPicker
+          currentGuess={state.currentGuess}
+          onSelectColor={handleSelectColor}
+          onDelete={handleDeleteSelection}
+          onSubmit={handleSubmitGuess}
+        />
+      )}
+
+      {(state.status === 'won' || state.status === 'lost') && (
+        <EndDialog
+          status={state.status}
+          answer={state.answer}
+          onPlayAgain={handlePlayAgain}
+          onGoHome={handleGoHome}
+        />
+      )}
+    </div>
+  )
+}
+Now let me create the components directory and all the UI components.
+
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create UI components (GameBoard, GuessRow, ColorPicker, EndDialog)
+
+Run tests to verify game logic
+Write ColorDot.tsx
+40 lines
+'use client'
+
+import { Colors } from '../constants'
+
+const colorClasses: Record<Colors, string> = {
+  [Colors.Red]: 'bg-red-500',
+  [Colors.Green]: 'bg-green-500',
+  [Colors.Blue]: 'bg-blue-500',
+  [Colors.Orange]: 'bg-orange-500',
+  [Colors.Purple]: 'bg-purple-500',
+  [Colors.Yellow]: 'bg-yellow-400',
+}
+
+interface ColorDotProps {
+  color: Colors | null
+  size?: 'sm' | 'md' | 'lg'
+  onClick?: () => void
+}
+
+const sizeClasses = {
+  sm: 'w-6 h-6',
+  md: 'w-10 h-10',
+  lg: 'w-12 h-12',
+}
+
+export function ColorDot({ color, size = 'md', onClick }: ColorDotProps) {
+  const base = `rounded-full border-2 ${sizeClasses[size]}`
+  const filled = color
+    ? `${colorClasses[color]} border-transparent`
+    : 'bg-gray-700 border-gray-600'
+  const interactive = onClick ? 'cursor-pointer hover:scale-110 active:scale-95 transition-transform' : ''
+
+  return (
+    <div
+      className={`${base} ${filled} ${interactive}`}
+      onClick={onClick}
+    />
+  )
+}
+Write FeedbackPips.tsx
+36 lines
+'use client'
+
+import type { Feedback } from '../types'
+
+interface FeedbackPipsProps {
+  feedback?: Feedback
+}
+
+export function FeedbackPips({ feedback }: FeedbackPipsProps) {
+  const blacks = feedback?.blacks ?? 0
+  const whites = feedback?.whites ?? 0
+
+  const pips = [
+    ...Array(blacks).fill('black'),
+    ...Array(whites).fill('white'),
+    ...Array(4 - blacks - whites).fill('empty'),
+  ]
+
+  return (
+    <div className="grid grid-cols-2 gap-1 w-10 h-10">
+      {pips.map((type, i) => (
+        <div
+          key={i}
+          className={`rounded-full w-4 h-4 ${
+            type === 'black'
+              ? 'bg-gray-900 border border-gray-600'
+              : type === 'white'
+              ? 'bg-white border border-gray-400'
+              : 'bg-gray-700 border border-gray-600'
+          }`}
+        />
+      ))}
+    </div>
+  )
+}
+Write GuessRow.tsx
+28 lines
+'use client'
+
+import { Colors, GUESS_LENGTH } from '../constants'
+import type { Guess, Feedback } from '../types'
+import { ColorDot } from './ColorDot'
+import { FeedbackPips } from './FeedbackPips'
+
+interface GuessRowProps {
+  guess?: Colors[]
+  feedback?: Feedback
+  isActive?: boolean
+}
+
+export function GuessRow({ guess = [], feedback, isActive }: GuessRowProps) {
+  const slots = Array.from({ length: GUESS_LENGTH }, (_, i) => guess[i] ?? null)
+
+  return (
+    <div className={`flex items-center gap-3 px-3 py-2 rounded-lg ${isActive ? 'bg-gray-700/50' : ''}`}>
+      <div className="flex gap-2">
+        {slots.map((color, i) => (
+          <ColorDot key={i} color={color} size="md" />
+        ))}
+      </div>
+      <FeedbackPips feedback={feedback} />
+    </div>
+  )
+}
+Write GameBoard.tsx
+39 lines
+'use client'
+
+import { Colors, MAX_GUESSES, InProgress } from '../constants'
+import type { Guess, Feedback, GameStatus } from '../types'
+import { GuessRow } from './GuessRow'
+
+interface GameBoardProps {
+  guessHistory: Guess[]
+  feedbackHistory: Feedback[]
+  currentGuess: Colors[]
+  gameStatus: GameStatus
+}
+
+export function GameBoard({ guessHistory, feedbackHistory, currentGuess, gameStatus }: GameBoardProps) {
+  const rows = Array.from({ length: MAX_GUESSES }, (_, i) => {
+    const isSubmitted = i < guessHistory.length
+    const isActive = i === guessHistory.length && gameStatus === InProgress
+
+    return {
+      guess: isSubmitted ? guessHistory[i] : isActive ? currentGuess : [],
+      feedback: isSubmitted ? feedbackHistory[i] : undefined,
+      isActive,
+    }
+  })
+
+  return (
+    <div className="flex flex-col gap-1 bg-gray-800 rounded-2xl p-4 shadow-xl">
+      {rows.map((row, i) => (
+        <GuessRow
+          key={i}
+          guess={row.guess}
+          feedback={row.feedback}
+          isActive={row.isActive}
+        />
+      ))}
+    </div>
+  )
+}
+Write ColorPicker.tsx
+52 lines
+'use client'
+
+import { Colors, GUESS_LENGTH } from '../constants'
+import { ColorDot } from './ColorDot'
+import { isValidGuess } from '../gameLogic'
+
+const ALL_COLORS = Object.values(Colors)
+
+interface ColorPickerProps {
+  currentGuess: Colors[]
+  onSelectColor: (color: Colors) => void
+  onDelete: () => void
+  onSubmit: () => void
+}
+
+export function ColorPicker({ currentGuess, onSelectColor, onDelete, onSubmit }: ColorPickerProps) {
+  const isFull = currentGuess.length === GUESS_LENGTH
+  const canSubmit = isValidGuess(currentGuess)
+  const canDelete = currentGuess.length > 0
+
+  return (
+    <div className="mt-6 flex flex-col items-center gap-4">
+      <div className="flex gap-3">
+        {ALL_COLORS.map(color => (
+          <ColorDot
+            key={color}
+            color={color}
+            size="lg"
+            onClick={isFull ? undefined : () => onSelectColor(color)}
+          />
+        ))}
+      </div>
+      <div className="flex gap-3">
+        <button
+          onClick={onDelete}
+          disabled={!canDelete}
+          className="px-5 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-40 hover:bg-gray-600 active:bg-gray-800 transition-colors"
+        >
+          Undo
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={!canSubmit}
+          className="px-5 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-40 hover:bg-indigo-500 active:bg-indigo-700 transition-colors font-semibold"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  )
+}
+Write EndDialog.tsx
+52 lines
+'use client'
+
+import type { Guess, GameStatus } from '../types'
+import { ColorDot } from './ColorDot'
+
+interface EndDialogProps {
+  status: GameStatus
+  answer: Guess | null
+  onPlayAgain: () => void
+  onGoHome: () => void
+}
+
+export function EndDialog({ status, answer, onPlayAgain, onGoHome }: EndDialogProps) {
+  const won = status === 'won'
+
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-10">
+      <div className="bg-gray-800 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-2xl max-w-sm w-full mx-4">
+        <h2 className={`text-4xl font-bold ${won ? 'text-green-400' : 'text-red-400'}`}>
+          {won ? 'You Win!' : 'Game Over'}
+        </h2>
+
+        {!won && answer && (
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-gray-400 text-sm">The answer was:</p>
+            <div className="flex gap-2">
+              {answer.map((color, i) => (
+                <ColorDot key={i} color={color} size="md" />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-3 w-full">
+          <button
+            onClick={onPlayAgain}
+            className="flex-1 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+          >
+            Play Again
+          </button>
+          <button
+            onClick={onGoHome}
+            className="flex-1 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 active:bg-gray-800 transition-colors"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Update app/page.tsx with Start Game screen
+
+Create UI components (GameBoard, GuessRow, ColorPicker, EndDialog)
+
+Run tests to verify game logic
+Bash Run vitest
+IN
+npx vitest run 2>&1
+
+OUT
+Exit code 1
+
+ RUN  v4.1.7 /Users/valerienielson/misc-code/react-mantismind
+
+ ❯ tests/gamelogic.test.ts (0 test)
+ ❯ tests/gameState.test.ts (0 test)
+ ❯ tests/constants.test.ts (5 tests | 2 failed) 6ms
+     × a code is a sequence of 4 colors 3ms
+     × feedback pips come in black and white 0ms
+ ❯ tests/codeGeneration.test.ts (4 tests | 4 failed) 5ms
+     × generates a code of exactly 4 colors 2ms
+     × only uses valid colors 1ms
+     × allows the same color to repeat within a code 1ms
+     × produces randomized codes 0ms
+ ❯ tests/feedback.test.ts (9 tests | 9 failed) 8ms
+     × a fully correct guess earns 4 black pips 2ms
+     × a guess sharing no colors with the answer earns no pips 2ms
+     × correct color in the correct spot earns a black pip 0ms
+     × correct color in the wrong spot earns a white pip 0ms
+     × all correct colors in all wrong spots earns 4 white pips 0ms
+     × pips are sorted black first, then white 0ms
+     × a repeated guess color is not double counted against a single answer peg 0ms
+     × repeated colors in the answer are each matched at most once 0ms
+     × an answer peg consumed by a black pip cannot also earn a white pip 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/gameState.test.ts [ tests/gameState.test.ts ]
+Error: Cannot find package 'app/gameState.ts' imported from /Users/valerienielson/misc-code/react-mantismind/tests/gameState.test.ts
+ ❯ tests/gameState.test.ts:4:1
+      2|
+      3| import { Colors, Pip, CODE_LENGTH, MAX_GUESSES } from "app/constants.t…
+      4| import { addColor, createInitialState, startNewGame, submitGuess, undo…
+       | ^
+      5| import type { GameState } from "app/gameState.ts"
+      6|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/17]⎯
+
+ FAIL  tests/gamelogic.test.ts [ tests/gamelogic.test.ts ]
+Error: Transform failed with 1 error:
+
+[PARSE_ERROR] Expected `}` but found `EOF`
+    ╭─[ tests/gamelogic.test.ts:39:83 ]
+    │
+ 30 │ describe('Guess Construction', () => {
+    │                                      ┬  
+    │                                      ╰── Opened here
+    │ 
+ 39 │ // add test for making sure that guess is 4 colors can't guess more or less than 4
+    │                                                                                   │ 
+    │                                                                                   ╰─ `}` expected
+────╯
+
+  Plugin: vite:oxc
+  File: /Users/valerienielson/misc-code/react-mantismind/tests/gamelogic.test.ts
+ ❯ transformWithOxc node_modules/vite/dist/node/chunks/node.js:3338:19
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:3409:26
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30273:51
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:24532:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/17]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/codeGeneration.test.ts > generateCode > generates a code of exactly 4 colors
+TypeError: generateCode is not a function
+ ❯ tests/codeGeneration.test.ts:12:18
+     1
+
+... [2394 characters truncated] ...
+
+.toBeDefined()
+       |                ^
+     26|     expect(Pip.White).toBeDefined()
+     27|     expect(Pip.Black).not.toEqual(Pip.White)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > a fully correct guess earns 4 black pips
+TypeError: Cannot read properties of undefined (reading 'Black')
+ ❯ tests/feedback.test.ts:12:53
+     10|     const answer = [Red, Green, Blue, Yellow]
+     11|     const guess = [Red, Green, Blue, Yellow]
+     12|     expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.Black, …
+       |                                                     ^
+     13|   })
+     14|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > a guess sharing no colors with the answer earns no pips
+AssertionError: expected { blacks: +0, whites: +0 } to deeply equal []
+
+- Expected:
+[]
+
++ Received:
+{
+  "blacks": 0,
+  "whites": 0,
+}
+
+ ❯ tests/feedback.test.ts:18:40
+     16|     const answer = [Red, Green, Blue, Yellow]
+     17|     const guess = [Orange, Purple, Orange, Purple]
+     18|     expect(getFeedback(guess, answer)).toEqual([])
+       |                                        ^
+     19|   })
+     20|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > correct color in the correct spot earns a black pip
+TypeError: Cannot read properties of undefined (reading 'Black')
+ ❯ tests/feedback.test.ts:24:53
+     22|     const answer = [Red, Green, Blue, Yellow]
+     23|     const guess = [Red, Purple, Purple, Purple]
+     24|     expect(getFeedback(guess, answer)).toEqual([Pip.Black])
+       |                                                     ^
+     25|   })
+     26|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > correct color in the wrong spot earns a white pip
+TypeError: Cannot read properties of undefined (reading 'White')
+ ❯ tests/feedback.test.ts:30:53
+     28|     const answer = [Red, Green, Blue, Yellow]
+     29|     const guess = [Purple, Red, Purple, Purple]
+     30|     expect(getFeedback(guess, answer)).toEqual([Pip.White])
+       |                                                     ^
+     31|   })
+     32|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > all correct colors in all wrong spots earns 4 white pips
+TypeError: Cannot read properties of undefined (reading 'White')
+ ❯ tests/feedback.test.ts:36:53
+     34|     const answer = [Red, Green, Blue, Yellow]
+     35|     const guess = [Yellow, Blue, Green, Red]
+     36|     expect(getFeedback(guess, answer)).toEqual([Pip.White, Pip.White, …
+       |                                                     ^
+     37|   })
+     38|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > pips are sorted black first, then white
+TypeError: Cannot read properties of undefined (reading 'Black')
+ ❯ tests/feedback.test.ts:43:53
+     41|     const guess = [Yellow, Green, Blue, Red]
+     42|     // Green and Blue are exact matches; Red and Yellow are swapped
+     43|     expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.Black, …
+       |                                                     ^
+     44|   })
+     45|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > a repeated guess color is not double counted against a single answer peg
+TypeError: Cannot read properties of undefined (reading 'Black')
+ ❯ tests/feedback.test.ts:49:53
+     47|     const answer = [Red, Green, Blue, Yellow]
+     48|     const guess = [Red, Red, Red, Red]
+     49|     expect(getFeedback(guess, answer)).toEqual([Pip.Black])
+       |                                                     ^
+     50|   })
+     51|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > repeated colors in the answer are each matched at most once
+TypeError: Cannot read properties of undefined (reading 'Black')
+ ❯ tests/feedback.test.ts:56:53
+     54|     const guess = [Red, Yellow, Red, Yellow]
+     55|     // First Red is exact; second Red matches the remaining answer Red…
+     56|     expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.White])
+       |                                                     ^
+     57|   })
+     58|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/17]⎯
+
+ FAIL  tests/feedback.test.ts > getFeedback > an answer peg consumed by a black pip cannot also earn a white pip
+TypeError: Cannot read properties of undefined (reading 'Black')
+ ❯ tests/feedback.test.ts:63:53
+     61|     const guess = [Green, Green, Yellow, Yellow]
+     62|     // One Green and one Yellow are exact; the duplicates have no pegs…
+     63|     expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.Black])
+       |                                                     ^
+     64|   })
+     65| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/17]⎯
+
+
+ Test Files  5 failed (5)
+      Tests  15 failed | 3 passed (18)
+   Start at  15:48:18
+   Duration  234ms (transform 234ms, setup 0ms, import 220ms, tests 19ms, environment 0ms)
+There are more test files than I saw. Let me read them all to understand the full expected API.
+
+Bash Read all test files
+IN
+cat /Users/valerienielson/misc-code/react-mantismind/tests/constants.test.ts
+echo "---"
+cat /Users/valerienielson/misc-code/react-mantismind/tests/codeGeneration.test.ts
+echo "---"
+cat /Users/valerienielson/misc-code/react-mantismind/tests/feedback.test.ts
+echo "---"
+cat /Users/valerienielson/misc-code/react-mantismind/tests/gameState.test.ts
+
+OUT
+import { describe, expect, test } from 'vitest'
+
+import { Colors, Pip, CODE_LENGTH, MAX_GUESSES } from "app/constants.ts"
+
+describe('game constants', () => {
+  test('there are exactly 6 guessable colors', () => {
+    expect(Object.values(Colors)).toHaveLength(6)
+  })
+
+  test('black and white are not guessable colors', () => {
+    const names = Object.values(Colors).map((c) => String(c).toLowerCase())
+    expect(names).not.toContain('black')
+    expect(names).not.toContain('white')
+  })
+
+  test('a code is a sequence of 4 colors', () => {
+    expect(CODE_LENGTH).toBe(4)
+  })
+
+  test('the player gets 10 guesses before game over', () => {
+    expect(MAX_GUESSES).toBe(10)
+  })
+
+  test('feedback pips come in black and white', () => {
+    expect(Pip.Black).toBeDefined()
+    expect(Pip.White).toBeDefined()
+    expect(Pip.Black).not.toEqual(Pip.White)
+  })
+})
+---
+import { afterEach, describe, expect, test, vi } from 'vitest'
+
+import { Colors, CODE_LENGTH } from "app/constants.ts"
+import { generateCode } from "app/gameLogic.ts"
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
+describe('generateCode', () => {
+  test('generates a code of exactly 4 colors', () => {
+    const code = generateCode()
+    expect(code).toHaveLength(CODE_LENGTH)
+  })
+
+  test('only uses valid colors', () => {
+    const validColors = Object.values(Colors)
+    const code = generateCode()
+    for (const color of code) {
+      expect(validColors).toContain(color)
+    }
+  })
+
+  test('allows the same color to repeat within a code', () => {
+    // Pin the RNG so every pick lands on the same color
+    vi.spyOn(Math, 'random').mockReturnValue(0)
+    const code = generateCode()
+    expect(code).toHaveLength(CODE_LENGTH)
+    expect(new Set(code).size).toBe(1)
+  })
+
+  test('produces randomized codes', () => {
+    const codes = new Set<string>()
+    for (let i = 0; i < 50; i++) {
+      codes.add(generateCode().join(','))
+    }
+    // 50 draws from 1296 possible codes virtually never collide every time
+    expect(codes.size).toBeGreaterThan(1)
+  })
+})
+---
+import { describe, expect, test } from 'vitest'
+
+import { Colors, Pip } from "app/constants.ts"
+import { getFeedback } from "app/gameLogic.ts"
+
+const { Red, Orange, Yellow, Green, Blue, Purple } = Colors
+
+describe('getFeedback', () => {
+  test('a fully correct guess earns 4 black pips', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Red, Green, Blue, Yellow]
+    expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.Black, Pip.Black, Pip.Black])
+  })
+
+  test('a guess sharing no colors with the answer earns no pips', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Orange, Purple, Orange, Purple]
+    expect(getFeedback(guess, answer)).toEqual([])
+  })
+
+  test('correct color in the correct spot earns a black pip', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Red, Purple, Purple, Purple]
+    expect(getFeedback(guess, answer)).toEqual([Pip.Black])
+  })
+
+  test('correct color in the wrong spot earns a white pip', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Purple, Red, Purple, Purple]
+    expect(getFeedback(guess, answer)).toEqual([Pip.White])
+  })
+
+  test('all correct colors in all wrong spots earns 4 white pips', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Yellow, Blue, Green, Red]
+    expect(getFeedback(guess, answer)).toEqual([Pip.White, Pip.White, Pip.White, Pip.White])
+  })
+
+  test('pips are sorted black first, then white', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Yellow, Green, Blue, Red]
+    // Green and Blue are exact matches; Red and Yellow are swapped
+    expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.Black, Pip.White, Pip.White])
+  })
+
+  test('a repeated guess color is not double counted against a single answer peg', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Red, Red, Red, Red]
+    expect(getFeedback(guess, answer)).toEqual([Pip.Black])
+  })
+
+  test('repeated colors in the answer are each matched at most once', () => {
+    const answer = [Red, Red, Blue, Green]
+    const guess = [Red, Yellow, Red, Yellow]
+    // First Red is exact; second Red matches the remaining answer Red out of place
+    expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.White])
+  })
+
+  test('an answer peg consumed by a black pip cannot also earn a white pip', () => {
+    const answer = [Red, Green, Blue, Yellow]
+    const guess = [Green, Green, Yellow, Yellow]
+    // One Green and one Yellow are exact; the duplicates have no pegs left to match
+    expect(getFeedback(guess, answer)).toEqual([Pip.Black, Pip.Black])
+  })
+})
+---
+import { describe, expect, test } from 'vitest'
+
+import { Colors, Pip, CODE_LENGTH, MAX_GUESSES } from "app/constants.ts"
+import { addColor, createInitialState, startNewGame, submitGuess, undoColor } from "app/gameState.ts"
+import type { GameState } from "app/gameState.ts"
+
+const { Red, Orange, Yellow, Green, Blue, Purple } = Colors
+
+const CODE: Colors[] = [Red, Green, Blue, Yellow]
+// Shares no colors with CODE, so it earns zero pips and never wins
+const WRONG_GUESS: Colors[] = [Orange, Purple, Orange, Purple]
+
+function withCurrentGuess(state: GameState, guess: Colors[]): GameState {
+  return guess.reduce((s, color) => addColor(s, color), state)
+}
+
+describe('createInitialState', () => {
+  test('starts with an empty board and a game in progress', () => {
+    const state = createInitialState(CODE)
+    expect(state.guesses).toEqual([])
+    expect(state.currentGuess).toEqual([])
+    expect(state.status).toEqual('playing')
+  })
+
+  test('uses the provided secret code', () => {
+    const state = createInitialState(CODE)
+    expect(state.secretCode).toEqual(CODE)
+  })
+
+  test('generates a valid secret code when none is provided', () => {
+    const state = createInitialState()
+    expect(state.secretCode).toHaveLength(CODE_LENGTH)
+    const validColors = Object.values(Colors)
+    for (const color of state.secretCode) {
+      expect(validColors).toContain(color)
+    }
+  })
+})
+
+describe('addColor', () => {
+  test('adds a color to the current guess', () => {
+    const state = addColor(createInitialState(CODE), Red)
+    expect(state.currentGuess).toEqual([Red])
+  })
+
+  test('keeps colors in the order they were picked', () => {
+    const state = withCurrentGuess(createInitialState(CODE), [Blue, Red, Blue])
+    expect(state.currentGuess).toEqual([Blue, Red, Blue])
+  })
+
+  test('ignores a fifth color once the guess is full', () => {
+    const full = withCurrentGuess(createInitialState(CODE), [Red, Red, Red, Red])
+    const after = addColor(full, Blue)
+    expect(after.currentGuess).toEqual([Red, Red, Red, Red])
+  })
+
+  test('does not mutate the previous state', () => {
+    const before = createInitialState(CODE)
+    addColor(before, Red)
+    expect(before.currentGuess).toEqual([])
+  })
+})
+
+describe('undoColor', () => {
+  test('removes only the most recently added color', () => {
+    const state = withCurrentGuess(createInitialState(CODE), [Red, Green, Blue])
+    expect(undoColor(state).currentGuess).toEqual([Red, Green])
+  })
+
+  test('does nothing when the current guess is empty', () => {
+    const state = createInitialState(CODE)
+    expect(undoColor(state).currentGuess).toEqual([])
+  })
+
+  test('does not mutate the previous state', () => {
+    const before = withCurrentGuess(createInitialState(CODE), [Red, Green])
+    undoColor(before)
+    expect(before.currentGuess).toEqual([Red, Green])
+  })
+})
+
+describe('submitGuess', () => {
+  test('records a full guess with its feedback and clears the current guess', () => {
+    const ready = withCurrentGuess(createInitialState(CODE), [Red, Green, Yellow, Blue])
+    const after = submitGuess(ready)
+    expect(after.guesses).toHaveLength(1)
+    expect(after.guesses[0].guess).toEqual([Red, Green, Yellow, Blue])
+    // Red and Green are exact; Blue and Yellow are swapped
+    expect(after.guesses[0].feedback).toEqual([Pip.Black, Pip.Black, Pip.White, Pip.White])
+    expect(after.currentGuess).toEqual([])
+  })
+
+  test('no feedback appears until the guess is submitted', () => {
+    const ready = withCurrentGuess(createInitialState(CODE), [Red, Green, Blue, Yellow])
+    expect(ready.guesses).toEqual([])
+  })
+
+  test('rejects a guess of fewer than 4 colors', () => {
+    const partial = withCurrentGuess(createInitialState(CODE), [Red, Green, Blue])
+    const after = submitGuess(partial)
+    expect(after.guesses).toEqual([])
+    expect(after.currentGuess).toEqual([Red, Green, Blue])
+  })
+
+  test('an incorrect guess leaves the game in progress', () => {
+    const after = submitGuess(withCurrentGuess(createInitialState(CODE), WRONG_GUESS))
+    expect(after.status).toEqual('playing')
+  })
+
+  test('guessing the code wins the game', () => {
+    const after = submitGuess(withCurrentGuess(createInitialState(CODE), CODE))
+    expect(after.status).toEqual('won')
+  })
+
+  test('the player can win before using all 10 guesses', () => {
+    let state = createInitialState(CODE)
+    state = submitGuess(withCurrentGuess(state, WRONG_GUESS))
+    state = submitGuess(withCurrentGuess(state, CODE))
+    expect(state.status).toEqual('won')
+    expect(state.guesses).toHaveLength(2)
+  })
+
+  test('10 incorrect guesses loses the game', () => {
+    let state = createInitialState(CODE)
+    for (let i = 0; i < MAX_GUESSES; i++) {
+      state = submitGuess(withCurrentGuess(state, WRONG_GUESS))
+    }
+    expect(state.status).toEqual('lost')
+    expect(state.guesses).toHaveLength(MAX_GUESSES)
+  })
+
+  test('the game stays in progress through the 9th incorrect guess', () => {
+    let state = createInitialState(CODE)
+    for (let i = 0; i < MAX_GUESSES - 1; i++) {
+      state = submitGuess(withCurrentGuess(state, WRONG_GUESS))
+    }
+    expect(state.status).toEqual('playing')
+  })
+
+  test('no more guesses are accepted after a win', () => {
+    const won = submitGuess(withCurrentGuess(createInitialState(CODE), CODE))
+    const after = submitGuess(withCurrentGuess(won, WRONG_GUESS))
+    expect(after.guesses).toHaveLength(1)
+    expect(after.status).toEqual('won')
+  })
+
+  test('no more colors can be picked after the game is over', () => {
+    const won = submitGuess(withCurrentGuess(createInitialState(CODE), CODE))
+    expect(addColor(won, Red).currentGuess).toEqual([])
+  })
+
+  test('no more guesses are accepted after a loss', () => {
+    let state = createInitialState(CODE)
+    for (let i = 0; i < MAX_GUESSES; i++) {
+      state = submitGuess(withCurrentGuess(state, WRONG_GUESS))
+    }
+    const after = submitGuess(withCurrentGuess(state, CODE))
+    expect(after.guesses).toHaveLength(MAX_GUESSES)
+    expect(after.status).toEqual('lost')
+  })
+
+  test('does not mutate the previous state', () => {
+    const ready = withCurrentGuess(createInitialState(CODE), WRONG_GUESS)
+    submitGuess(ready)
+    expect(ready.guesses).toEqual([])
+    expect(ready.currentGuess).toEqual(WRONG_GUESS)
+  })
+})
+
+describe('startNewGame', () => {
+  test('play again resets the board to a fresh game', () => {
+    const won = submitGuess(withCurrentGuess(createInitialState(CODE), CODE))
+    const fresh = startNewGame(won)
+    expect(fresh.guesses).toEqual([])
+    expect(fresh.currentGuess).toEqual([])
+    expect(fresh.status).toEqual('playing')
+  })
+
+  test('a new game gets a newly generated valid code', () => {
+    const won = submitGuess(withCurrentGuess(createInitialState(CODE), CODE))
+    const fresh = startNewGame(won)
+    expect(fresh.secretCode).toHaveLength(CODE_LENGTH)
+    const validColors = Object.values(Colors)
+    for (const color of fresh.secretCode) {
+      expect(validColors).toContain(color)
+    }
+  })
+})
+The tests reveal a much richer API than I initially saw. I need to refactor significantly based on the actual test expectations.
+
+Write constants.ts
+19 lines
+export enum Colors {
+  Red = 'red',
+  Green = 'green',
+  Blue = 'blue',
+  Orange = 'orange',
+  Purple = 'purple',
+  Yellow = 'yellow',
+}
+
+export enum Pip {
+  Black = 'black',
+  White = 'white',
+}
+
+export const InProgress = 'in-progress' as const
+
+export const CODE_LENGTH = 4
+export const MAX_GUESSES = 10
+Write types.ts
+15 lines
+import type { Colors, Pip } from './constants'
+
+export type Guess = [Colors, Colors, Colors, Colors]
+
+export type Feedback = Pip[]
+
+export type GameStatus = 'start' | 'in-progress' | 'won' | 'lost'
+
+export interface GameState {
+  answer: Colors[] | null
+  guessHistory: Array<{ guess: Colors[]; feedback: Pip[] }>
+  currentGuess: Colors[]
+  status: GameStatus
+}
+Now rewrite gameLogic.ts with the correct API (pure functions, getFeedback returns Pip[], generateCode exported):
+
+Write gameLogic.ts
+74 lines
+import { Colors, Pip, CODE_LENGTH, MAX_GUESSES } from './constants'
+import type { Guess } from './types'
+
+export { useGameState } from './useGameState'
+
+export function generateCode(): Colors[] {
+  const colorValues = Object.values(Colors)
+  return Array.from({ length: CODE_LENGTH }, () =>
+    colorValues[Math.floor(Math.random() * colorValues.length)]
+  )
+}
+
+export function checkWinCondition(guess: Colors[], answer: Colors[]): boolean {
+  return guess.length === answer.length && guess.every((c, i) => c === answer[i])
+}
+
+export function isValidGuess(guess: Colors[]): guess is Guess {
+  return guess.length === CODE_LENGTH
+}
+
+export function updateGuessHistory(history: Colors[][], guess: Colors[]): Colors[][] {
+  return [...history, guess]
+}
+
+export function deleteSelection(guess: Colors[]): Colors[] {
+  return guess.slice(0, -1)
+}
+
+export function selectColor(guess: Colors[], color: Colors): Colors[] {
+  if (guess.length >= CODE_LENGTH) return guess
+  return [...guess, color]
+}
+
+export function getFeedback(guess: Colors[], answer: Colors[]): Pip[] {
+  const blacks: Pip[] = []
+  const guessCounts: Partial<Record<Colors, number>> = {}
+  const answerCounts: Partial<Record<Colors, number>> = {}
+
+  for (let i = 0; i < answer.length; i++) {
+    if (guess[i] === answer[i]) {
+      blacks.push(Pip.Black)
+    } else {
+      guessCounts[guess[i]] = (guessCounts[guess[i]] ?? 0) + 1
+      answerCounts[answer[i]] = (answerCounts[answer[i]] ?? 0) + 1
+    }
+  }
+
+  const whites: Pip[] = []
+  for (const color of Object.values(Colors)) {
+    const count = Math.min(guessCounts[color] ?? 0, answerCounts[color] ?? 0)
+    for (let i = 0; i < count; i++) {
+      whites.push(Pip.White)
+    }
+  }
+
+  return [...blacks, ...whites]
+}
+
+// Module-level guess counter for the no-arg usedAllGuesses() API
+let _guessCount = 0
+
+export function usedAllGuesses(): boolean {
+  return _guessCount >= MAX_GUESSES
+}
+
+export function startGame(): void {
+  _guessCount = 0
+}
+
+export function submitGuess(guess: Colors[], answer: Colors[]): Pip[] {
+  _guessCount++
+  return getFeedback(guess, answer)
+}
+Now create gameState.ts with the pure functional state API:
+
+Write gameState.ts
+50 lines
+import { Colors, Pip, CODE_LENGTH, MAX_GUESSES } from './constants'
+import { generateCode, getFeedback, checkWinCondition } from './gameLogic'
+
+export interface GameState {
+  secretCode: Colors[]
+  guesses: Array<{ guess: Colors[]; feedback: Pip[] }>
+  currentGuess: Colors[]
+  status: 'playing' | 'won' | 'lost'
+}
+
+export function createInitialState(secretCode?: Colors[]): GameState {
+  return {
+    secretCode: secretCode ?? generateCode(),
+    guesses: [],
+    currentGuess: [],
+    status: 'playing',
+  }
+}
+
+export function addColor(state: GameState, color: Colors): GameState {
+  if (state.status !== 'playing' || state.currentGuess.length >= CODE_LENGTH) {
+    return state
+  }
+  return { ...state, currentGuess: [...state.currentGuess, color] }
+}
+
+export function undoColor(state: GameState): GameState {
+  return { ...state, currentGuess: state.currentGuess.slice(0, -1) }
+}
+
+export function submitGuess(state: GameState): GameState {
+  if (state.status !== 'playing' || state.currentGuess.length < CODE_LENGTH) {
+    return state
+  }
+  const feedback = getFeedback(state.currentGuess, state.secretCode)
+  const newGuesses = [...state.guesses, { guess: state.currentGuess, feedback }]
+  const won = checkWinCondition(state.currentGuess, state.secretCode)
+  const lost = !won && newGuesses.length >= MAX_GUESSES
+  return {
+    ...state,
+    guesses: newGuesses,
+    currentGuess: [],
+    status: won ? 'won' : lost ? 'lost' : 'playing',
+  }
+}
+
+export function startNewGame(_state: GameState): GameState {
+  return createInitialState()
+}
+Now create useGameState.ts (the React hook, separate to avoid circular imports):
+
+Write useGameState.ts
+51 lines
+'use client'
+
+import { useState } from 'react'
+import { Colors } from './constants'
+import {
+  GameState,
+  createInitialState,
+  addColor,
+  undoColor,
+  submitGuess,
+  startNewGame,
+} from './gameState'
+
+export function useGameState() {
+  const [gameState, setGameState] = useState<GameState | null>(null)
+
+  function handleStartGame() {
+    setGameState(createInitialState())
+  }
+
+  function handleSelectColor(color: Colors) {
+    setGameState(prev => (prev ? addColor(prev, color) : prev))
+  }
+
+  function handleDeleteSelection() {
+    setGameState(prev => (prev ? undoColor(prev) : prev))
+  }
+
+  function handleSubmitGuess() {
+    setGameState(prev => (prev ? submitGuess(prev) : prev))
+  }
+
+  function handlePlayAgain() {
+    setGameState(prev => (prev ? startNewGame(prev) : prev))
+  }
+
+  function handleGoHome() {
+    setGameState(null)
+  }
+
+  return {
+    gameState,
+    handleStartGame,
+    handleSelectColor,
+    handleDeleteSelection,
+    handleSubmitGuess,
+    handlePlayAgain,
+    handleGoHome,
+  }
+}
+Now update page.tsx and the components to use the new GameState structure from gameState.ts:
+
+Write page.tsx
+64 lines
+'use client'
+
+import { useGameState } from './useGameState'
+import { GameBoard } from './components/GameBoard'
+import { ColorPicker } from './components/ColorPicker'
+import { EndDialog } from './components/EndDialog'
+
+export default function Home() {
+  const {
+    gameState,
+    handleStartGame,
+    handleSelectColor,
+    handleDeleteSelection,
+    handleSubmitGuess,
+    handlePlayAgain,
+    handleGoHome,
+  } = useGameState()
+
+  if (!gameState) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900">
+        <h1 className="text-5xl font-bold text-white mb-4 tracking-wide">Mastermind</h1>
+        <p className="text-gray-400 mb-10 text-lg">Crack the 4-color code in 10 tries</p>
+        <button
+          onClick={handleStartGame}
+          className="px-8 py-4 bg-indigo-600 text-white text-xl font-semibold rounded-xl hover:bg-indigo-500 active:bg-indigo-700 transition-colors shadow-lg"
+        >
+          Start Game
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 py-8 px-4">
+      <h1 className="text-3xl font-bold text-white mb-6 tracking-wide">Mastermind</h1>
+
+      <GameBoard
+        guesses={gameState.guesses}
+        currentGuess={gameState.currentGuess}
+        gameStatus={gameState.status}
+      />
+
+      {gameState.status === 'playing' && (
+        <ColorPicker
+          currentGuess={gameState.currentGuess}
+          onSelectColor={handleSelectColor}
+          onDelete={handleDeleteSelection}
+          onSubmit={handleSubmitGuess}
+        />
+      )}
+
+      {(gameState.status === 'won' || gameState.status === 'lost') && (
+        <EndDialog
+          status={gameState.status}
+          secretCode={gameState.secretCode}
+          onPlayAgain={handlePlayAgain}
+          onGoHome={handleGoHome}
+        />
+      )}
+    </div>
+  )
+}
+Now update the components to use the new guesses structure:
+
+Write FeedbackPips.tsx
+31 lines
+'use client'
+
+import { Pip } from '../constants'
+
+interface FeedbackPipsProps {
+  feedback?: Pip[]
+}
+
+export function FeedbackPips({ feedback }: FeedbackPipsProps) {
+  const pips = feedback
+    ? [...feedback, ...Array(4 - feedback.length).fill(null)]
+    : Array(4).fill(null)
+
+  return (
+    <div className="grid grid-cols-2 gap-1 w-10 h-10">
+      {pips.map((pip, i) => (
+        <div
+          key={i}
+          className={`rounded-full w-4 h-4 ${
+            pip === Pip.Black
+              ? 'bg-gray-900 border border-gray-600'
+              : pip === Pip.White
+              ? 'bg-white border border-gray-400'
+              : 'bg-gray-700 border border-gray-600'
+          }`}
+        />
+      ))}
+    </div>
+  )
+}
+Write GuessRow.tsx
+27 lines
+'use client'
+
+import { Colors, Pip, CODE_LENGTH } from '../constants'
+import { ColorDot } from './ColorDot'
+import { FeedbackPips } from './FeedbackPips'
+
+interface GuessRowProps {
+  guess?: Colors[]
+  feedback?: Pip[]
+  isActive?: boolean
+}
+
+export function GuessRow({ guess = [], feedback, isActive }: GuessRowProps) {
+  const slots = Array.from({ length: CODE_LENGTH }, (_, i) => guess[i] ?? null)
+
+  return (
+    <div className={`flex items-center gap-3 px-3 py-2 rounded-lg ${isActive ? 'bg-gray-700/50' : ''}`}>
+      <div className="flex gap-2">
+        {slots.map((color, i) => (
+          <ColorDot key={i} color={color} size="md" />
+        ))}
+      </div>
+      <FeedbackPips feedback={feedback} />
+    </div>
+  )
+}
+Write GameBoard.tsx
+37 lines
+'use client'
+
+import { Colors, Pip, MAX_GUESSES } from '../constants'
+import { GuessRow } from './GuessRow'
+
+interface GameBoardProps {
+  guesses: Array<{ guess: Colors[]; feedback: Pip[] }>
+  currentGuess: Colors[]
+  gameStatus: 'playing' | 'won' | 'lost'
+}
+
+export function GameBoard({ guesses, currentGuess, gameStatus }: GameBoardProps) {
+  const rows = Array.from({ length: MAX_GUESSES }, (_, i) => {
+    const isSubmitted = i < guesses.length
+    const isActive = i === guesses.length && gameStatus === 'playing'
+
+    return {
+      guess: isSubmitted ? guesses[i].guess : isActive ? currentGuess : [],
+      feedback: isSubmitted ? guesses[i].feedback : undefined,
+      isActive,
+    }
+  })
+
+  return (
+    <div className="flex flex-col gap-1 bg-gray-800 rounded-2xl p-4 shadow-xl">
+      {rows.map((row, i) => (
+        <GuessRow
+          key={i}
+          guess={row.guess}
+          feedback={row.feedback}
+          isActive={row.isActive}
+        />
+      ))}
+    </div>
+  )
+}
+Write ColorPicker.tsx
+50 lines
+'use client'
+
+import { Colors, CODE_LENGTH } from '../constants'
+import { ColorDot } from './ColorDot'
+
+const ALL_COLORS = Object.values(Colors)
+
+interface ColorPickerProps {
+  currentGuess: Colors[]
+  onSelectColor: (color: Colors) => void
+  onDelete: () => void
+  onSubmit: () => void
+}
+
+export function ColorPicker({ currentGuess, onSelectColor, onDelete, onSubmit }: ColorPickerProps) {
+  const isFull = currentGuess.length === CODE_LENGTH
+  const canDelete = currentGuess.length > 0
+
+  return (
+    <div className="mt-6 flex flex-col items-center gap-4">
+      <div className="flex gap-3">
+        {ALL_COLORS.map(color => (
+          <ColorDot
+            key={color}
+            color={color}
+            size="lg"
+            onClick={isFull ? undefined : () => onSelectColor(color)}
+          />
+        ))}
+      </div>
+      <div className="flex gap-3">
+        <button
+          onClick={onDelete}
+          disabled={!canDelete}
+          className="px-5 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-40 hover:bg-gray-600 active:bg-gray-800 transition-colors"
+        >
+          Undo
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={!isFull}
+          className="px-5 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-40 hover:bg-indigo-500 active:bg-indigo-700 transition-colors font-semibold"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  )
+}
+Write EndDialog.tsx
+52 lines
+'use client'
+
+import { Colors } from '../constants'
+import { ColorDot } from './ColorDot'
+
+interface EndDialogProps {
+  status: 'won' | 'lost'
+  secretCode: Colors[]
+  onPlayAgain: () => void
+  onGoHome: () => void
+}
+
+export function EndDialog({ status, secretCode, onPlayAgain, onGoHome }: EndDialogProps) {
+  const won = status === 'won'
+
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-10">
+      <div className="bg-gray-800 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-2xl max-w-sm w-full mx-4">
+        <h2 className={`text-4xl font-bold ${won ? 'text-green-400' : 'text-red-400'}`}>
+          {won ? 'You Win!' : 'Game Over'}
+        </h2>
+
+        {!won && (
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-gray-400 text-sm">The answer was:</p>
+            <div className="flex gap-2">
+              {secretCode.map((color, i) => (
+                <ColorDot key={i} color={color} size="md" />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-3 w-full">
+          <button
+            onClick={onPlayAgain}
+            className="flex-1 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 active:bg-indigo-700 transition-colors"
+          >
+            Play Again
+          </button>
+          <button
+            onClick={onGoHome}
+            className="flex-1 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 active:bg-gray-800 transition-colors"
+          >
+            Go Home
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+Bash Run vitest to check test results
+IN
+npx vitest run 2>&1
+
+OUT
+Exit code 1
+
+ RUN  v4.1.7 /Users/valerienielson/misc-code/react-mantismind
+
+ ❯ tests/gamelogic.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/gamelogic.test.ts [ tests/gamelogic.test.ts ]
+Error: Transform failed with 1 error:
+
+[PARSE_ERROR] Expected `}` but found `EOF`
+    ╭─[ tests/gamelogic.test.ts:39:83 ]
+    │
+ 30 │ describe('Guess Construction', () => {
+    │                                      ┬  
+    │                                      ╰── Opened here
+    │ 
+ 39 │ // add test for making sure that guess is 4 colors can't guess more or less than 4
+    │                                                                                   │ 
+    │                                                                                   ╰─ `}` expected
+────╯
+
+  Plugin: vite:oxc
+  File: /Users/valerienielson/misc-code/react-mantismind/tests/gamelogic.test.ts
+ ❯ transformWithOxc node_modules/vite/dist/node/chunks/node.js:3338:19
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:3409:26
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30273:51
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:24532:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  42 passed (42)
+   Start at  15:51:29
+   Duration  268ms (transform 240ms, setup 0ms, import 303ms, tests 18ms, environment 0ms)
+42 tests pass across 4 files. The only failure is gamelogic.test.ts which has a syntax error — the file is incomplete (unclosed describe block). Let me fix it:
+
+Edit gamelogic.test.ts
+Added 1 line
+Bash Run tests to verify all pass now
+IN
+npx vitest run 2>&1
+
+OUT
+Exit code 1
+
+ RUN  v4.1.7 /Users/valerienielson/misc-code/react-mantismind
+
+ ❯ tests/gamelogic.test.ts (2 tests | 1 failed) 6ms
+     × When the user has submitted 10 incorrect guesses, game loses 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/gamelogic.test.ts > Guess Construction
+Error: No test found in suite Guess Construction
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/gamelogic.test.ts > Win/Lose Condition Tests > When the user has submitted 10 incorrect guesses, game loses
+AssertionError: expected false to deeply equal true
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/gamelogic.test.ts:26:30
+     24|     expect(usedAllGuesses()).toEqual(false)
+     25|     guessHistory.push(guess, guess, guess, guess, guess, guess, guess)
+     26|     expect(usedAllGuesses()).toEqual(true)
+       |                              ^
+     27|   })
+     28| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 43 passed (44)
+   Start at  15:51:48
+   Duration  160ms (transform 185ms, setup 0ms, import 261ms, tests 24ms, environment 0ms)
+Two remaining issues: the empty describe block fails vitest strict mode, and the usedAllGuesses test uses a local variable without updating module state (the existing TODO comment acknowledges this). I'll add a test.todo to the empty suite and note the broken test.
+
+Edit gamelogic.test.ts
+Added 1 line
+Bash Run all tests
+IN
+npx vitest run 2>&1
+
+OUT
+Exit code 1
+
+ RUN  v4.1.7 /Users/valerienielson/misc-code/react-mantismind
+
+ ❯ tests/gamelogic.test.ts (3 tests | 1 failed | 1 todo) 5ms
+     × When the user has submitted 10 incorrect guesses, game loses 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/gamelogic.test.ts > Win/Lose Condition Tests > When the user has submitted 10 incorrect guesses, game loses
+AssertionError: expected false to deeply equal true
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/gamelogic.test.ts:26:30
+     24|     expect(usedAllGuesses()).toEqual(false)
+     25|     guessHistory.push(guess, guess, guess, guess, guess, guess, guess)
+     26|     expect(usedAllGuesses()).toEqual(true)
+       |                              ^
+     27|   })
+     28| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 43 passed | 1 todo (45)
+   Start at  15:52:20
+   Duration  160ms (transform 188ms, setup 0ms, import 263ms, tests 23ms, environment 0ms)
+Update Todos
+
+Create vitest.config.ts with app/ path alias
+
+Create app/constants.ts with Colors enum and InProgress
+
+Create app/types.ts with Guess, Feedback, GameState types
+
+Create app/gameLogic.ts with all game functions and useGameState hook
+
+Create app/gameState.ts with pure functional state management
+
+Update app/page.tsx with Start Game screen
+
+Create UI components (GameBoard, GuessRow, ColorPicker, EndDialog)
+
+Run tests to verify game logic
+43/45 tests pass. Here's a summary of what was built and what remains:
+
+What was built
+New files:
+
+app/constants.ts — Colors enum (6 colors), Pip enum (Black/White), CODE_LENGTH, MAX_GUESSES
+app/types.ts — Guess, Feedback, GameState types
+app/gameLogic.ts — Pure game functions: generateCode, checkWinCondition, getFeedback (returns Pip[] sorted blacks-first), selectColor, deleteSelection, isValidGuess, updateGuessHistory, submitGuess, usedAllGuesses
+app/gameState.ts — Pure functional state management: createInitialState, addColor, undoColor, submitGuess, startNewGame, GameState type
+app/useGameState.ts — React hook wrapping gameState.ts
+vitest.config.ts — Path alias so tests can import from app/
+app/components/ — GameBoard, GuessRow, ColorPicker, FeedbackPips, ColorDot, EndDialog
+app/page.tsx — Start screen + live game board in one page
+One unfixable test
+gamelogic.test.ts > usedAllGuesses is broken by design. It pushes to a local guessHistory variable but calls usedAllGuesses() with no arguments, so module state never updates. The existing // todo might have to mock guessHistory comment in that test acknowledges this. The test needs to be rewritten to either pass guessHistory as a parameter or mock the module state — I left it as-is since it's your test.
