@@ -37,3 +37,5 @@ describe('Guess Construction', () => {
   })
 
 // add test for making sure that guess is 4 colors can't guess more or less than 4
+  test.todo('a guess must be exactly 4 colors')
+})
