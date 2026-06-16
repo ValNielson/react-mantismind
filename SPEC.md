@@ -28,3 +28,69 @@ To create the game mastermind in react/next.js.
 - pips are next to each guess row in a 2 by 2
 - guess input interface is clicking a colored dot with the ability to submit a full 4 color guess or undo a color choice in sequence order (so if i hit undo it only undoes the most recently added color)
 - when you win, a dialog appears that says "you win!" and presents a "play again" button or a "go home" button
+
+
+## Implementation Notes
+
+The game is implemented with a clean split between pure game logic and React UI:
+
+- `app/constants.ts` — `Colors` (6 colors), `Pip` (Black/White), `CODE_LENGTH` (4),
+  `MAX_GUESSES` (10), `GameStatus`, and `InProgress`.
+- `app/types.ts` — `Guess`, `Feedback`, and `SubmittedGuess` types.
+- `app/gameLogic.ts` — pure rules (`generateCode`, `getFeedback`, `checkWinCondition`,
+  `isValidGuess`, `selectColor`, `deleteSelection`, `updateGuessHistory`) plus the
+  procedural session helpers (`startGame`, `submitGuess`, `usedAllGuesses`) and the
+  `useGameState` React hook the UI consumes.
+- `app/gameState.ts` — the canonical immutable state model (`createInitialState`,
+  `addColor`, `undoColor`, `submitGuess`, `startNewGame`). All transitions return a new
+  state object and never mutate their input.
+- `app/page.tsx` — the full UI (start screen, 10×4 board, color palette, undo/submit
+  controls, and the end-of-game dialog).
+
+No third-party game/scoring libraries were needed — Mastermind feedback scoring is a
+small, well-defined algorithm, so it is implemented directly (and fully unit-tested via
+`tests/feedback.test.ts`). React + Tailwind (already in the project) cover the UI.
+
+### Tooling added (no test files were modified)
+- `vitest.config.ts` — maps the bare `app/...` import specifier the tests use to the
+  `app/` directory so Vitest can resolve the implementation.
+- `tsconfig.json` — added an `app/*` path alias and `allowImportingTsExtensions` so
+  `tsc`/`next build` resolve the same `app/...*.ts` imports the test files use.
+
+## Assumptions Made
+- **6 colors chosen:** Red, Orange, Yellow, Green, Blue, Purple (any 6 non-black/white
+  colors satisfy the spec).
+- **Lose state:** the spec only describes the *win* dialog. A symmetric "Game over"
+  dialog (with the revealed secret code, plus Play Again / Go Home) is shown after 10
+  incorrect guesses. `gameState.test.ts` confirms the `'lost'` status, so this is
+  consistent with the test source of truth.
+- **"Go Home":** returns to the opening Start Game screen and discards the current game.
+- **Board ordering:** submitted guesses fill from the top; the active guess and the
+  remaining empty rows follow below.
+- **Two state models coexist by design:** the test suite imports both an earlier
+  procedural API (`app/gameLogic.ts`) and a later immutable API (`app/gameState.ts`).
+  Both are implemented; the UI is built on the immutable `gameState` model, which is the
+  more thoroughly specified one.
+
+## Recommended Additional Tests / Test Fixes
+These concern existing tests that could not pass as written; per instructions, **no test
+files were edited**. They are noted here for follow-up:
+
+1. **`tests/gamelogic.test.ts` → "When the user has submitted 10 incorrect guesses, game
+   loses"** — this test calls `usedAllGuesses()` with no arguments but asserts behavior
+   based on a *local* `guessHistory` array that is never connected to module state. The
+   test author's own `// todo might have to mock guessHistory` confirms it is incomplete.
+   It cannot pass without either mocking the module's history or changing
+   `usedAllGuesses` to accept the history as a parameter, e.g.
+   `usedAllGuesses(guessHistory)`. **Recommendation:** pass the history in, or mock the
+   module — the equivalent, already-passing assertions live in `tests/gameState.test.ts`
+   ("10 incorrect guesses loses the game").
+2. **`tests/gamelogic.test.ts` → "Guess Construction" suite** — this `describe` block
+   contains only a `beforeEach` and no `test`s, which Vitest 4 reports as an error ("No
+   test found in suite"). **Recommendation:** add the intended guess-length tests (the
+   trailing comment hints at "guess is 4 colors, can't guess more or less than 4"); the
+   equivalent rules are already covered by `tests/gameState.test.ts` ("ignores a fifth
+   color once the guess is full" and "rejects a guess of fewer than 4 colors").
+3. **UI tests:** there is currently no component/integration test for `app/page.tsx`.
+   Consider adding React Testing Library coverage for the start→board→win/lose flow,
+   undo/submit button enabling, and the play-again reset.
