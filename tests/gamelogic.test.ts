@@ -35,5 +35,11 @@ describe('Guess Construction', () => {
     guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
     guessHistory = [answer, guess, guess]
   })
+});
 
 // add test for making sure that guess is 4 colors can't guess more or less than 4
+
+
+/*
+We've already started developing using a test-driven development process, using that and the tests as a source of truth, go through and fill in the gaps using the spec.md file. Please start to develop the game Mastermind, making sure to use the tests and make sure that they pass. Do not edit any of the test files or add new tests. Please note in the spec.md if there are any recommended additional tests or any assumptions that were made. Check to see if there are existing libraries before creating any complex functionality from scratch. Don't stop to ask me any questions, use your best judgment.
+*/
