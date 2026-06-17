@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, test } from 'vitest'
 
 import { Colors, InProgress } from  "app/constants.ts"
 import { Guess } from "app/types.ts"
-import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback, startGame, submitGuess, usedAllGuesses, useGameState } from "app/gameLogic.ts"
+import { checkWinCondition, isValidGuess, updateGuessHistory, deleteSelection, selectColor, getFeedback, startGame, submitGuess, usedAllGuesses, useGameState, resetGameState } from "app/gameLogic.ts"
+
+beforeEach(() => {
+  resetGameState()
+})
 
 describe('Win/Lose Condition Tests', () => {
   let guess: Guess, answer: Guess, guessHistory: Guess[];
@@ -11,6 +15,7 @@ describe('Win/Lose Condition Tests', () => {
     answer = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
     guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
     guessHistory = [answer, guess, guess]
+    useGameState().gameHistory = guessHistory
   })
 
   // win conditions tests
@@ -20,7 +25,6 @@ describe('Win/Lose Condition Tests', () => {
 
   // add test to check game loses after 10 guesses --> if total guess history is 10 + all incorrect
   test('When the user has submitted 10 incorrect guesses, game loses', () => {
-    //todo might have to mock guessHistory
     expect(usedAllGuesses()).toEqual(false)
     guessHistory.push(guess, guess, guess, guess, guess, guess, guess)
     expect(usedAllGuesses()).toEqual(true)
@@ -34,10 +38,10 @@ describe('Guess Construction', () => {
     answer = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
     guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
     guessHistory = [answer, guess, guess]
+    useGameState().gameHistory = guessHistory
   })
 
   // add test for making sure that guess is 4 colors can't guess more or less than 4
-  // test it throws error if guess is more or less than 5 colors
   test('When a user submits a guess it must be exactly 4 colors', () => {
     let wrongGuess: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange, Colors.Orange]
     expect(isValidGuess(wrongGuess)).toEqual(false)
@@ -49,7 +53,6 @@ describe('Guess Construction', () => {
   // make sure current guesses don't overwrite past guesses (guessHistory)
   // dataset grows with each guess
   test('When a user submits a guess, it does not overwrite guessHistory', () => {
-    //todo might have to mock guessHistory
     let newGuess: Guess = [Colors.Red, Colors.Red, Colors.Red, Colors.Red]
     updateGuessHistory(newGuess)
     expect(useGameState().gameHistory[0]).toEqual(answer)
@@ -59,16 +62,16 @@ describe('Guess Construction', () => {
   })
 
   //MAYA when they click a color button, the guess correctly inputs to currentGuess/is modified accordingly
-  test('', () => {
+  test('When clicking a color button, the guess correctly inputs the color', () => {
     let newGuess: Guess = [Colors.Red]
-    selectColor(newGuess)
-    expect(newGuess[0]).toEqual(Colors.Green)
-    expect(newGuess[1]).toEqual(Colors.Red)
+    selectColor(newGuess, Colors.Blue)
+    expect(newGuess[0]).toEqual(Colors.Red)
+    expect(newGuess[1]).toEqual(Colors.Blue)
     expect(newGuess.length).toEqual(2)
-    selectColor(newGuess)
-    expect(newGuess[0]).toEqual(Colors.Green)
-    expect(newGuess[1]).toEqual(Colors.Red)
-    expect(newGuess[2]).toEqual(Colors.Red)
+    selectColor(newGuess, Colors.Green)
+    expect(newGuess[0]).toEqual(Colors.Red)
+    expect(newGuess[1]).toEqual(Colors.Blue)
+    expect(newGuess[2]).toEqual(Colors.Green)
     expect(newGuess.length).toEqual(3)
   })
 
@@ -100,7 +103,7 @@ describe('Guess Construction', () => {
   //DYLAN If delete when guess length is 0, no-op
   test('When a user tries to delete a selected color but there are no selected colors, nothing breaks', () => {
     const emptyGuess: Guess = []
-    expect(deleteSelection(emptyGuess)).not.toThrow()
+    expect(() => deleteSelection(emptyGuess)).not.toThrow()
     expect(emptyGuess.length).toEqual(0)
   })
 
@@ -110,7 +113,7 @@ describe('Feedback', () => {
   // Uses GetFeedback which is assumed to be an object setup like { black: number, white: number },
   // could also be an array but i thought this shape would be easier for keeping things out of order
   // and general testing and implementation :)
-  let answer: Guess 
+  let answer: Guess
   beforeEach(() => {
     answer = [Colors.Red, Colors.Blue, Colors.Green, Colors.Orange]
   })
@@ -157,30 +160,22 @@ describe('Feedback', () => {
 describe('Unable to edit game state', () => {
   const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green]
   const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange]
-  const guessHistory: Guess[] = [guessA, guessB]
 
   test('cannot re-set a guess', () => {
-    // setGuess(guessHistory[1], guessA); assuming there will be a setter method with a global iterator?? so that we cannot pass in the index we want to 
-    updateGuessHistory(1, guessA); //global index management, not ideal but how would we set that we are trying to update a past guess otherwise?
-    guessHistory[1] = guessA; //try to hard code changing guess history -- this should be not allowed
-    expect(guessHistory[1].toEqual(guessB));
+    updateGuessHistory(guessA);
+    updateGuessHistory(guessB);
+    updateGuessHistory(1, guessA);
+    expect(useGameState().gameHistory[1]).toEqual(guessB);
   });
 });
 
 //BO user cannot guess during an active process, pips are locked while feedback is generated
-//boolean state management ?? otherwise it'd be a cypress test
 describe('Unable to edit game state during an active process', () => {
   const guessA: Guess = [Colors.Blue, Colors.Yellow, Colors.Blue, Colors.Green];
-  const guessB: Guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
-  const guessHistory: Guess[] = [guessA, guessB];
-  const inProgress: InProgress = false; //bool - table for meeting, not scalable, but for our proj, does it need to be??
-
-  // OPEN Q: IF WE KNOW OUR APP WONT SCALE, DOES IT NEED TO BE SCALABLE?
 
   test('cannot update a guess while InProgress is true', () => {
     useGameState().inProgress = true;
-    let guessAttempt = updateGuessHistory(guessA); //this would prob throw if inprogress is true
-    expect(guessAttempt).toThrow(); 
+    expect(() => updateGuessHistory(guessA)).toThrow();
   });
 });
 
@@ -208,7 +203,7 @@ describe('Submit function kicks off feedback generation', () => {
   let guess: Guess;
 
   beforeEach(() => {
-    const guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
+    guess = [Colors.Green, Colors.Orange, Colors.Blue, Colors.Orange];
     useGameState().inProgress = false;
   });
 
@@ -264,14 +259,3 @@ describe("A submission cannot contain invalid colors", () => {
     expect(isValidGuess([Colors.Orange, Colors.Red, Colors.Blue, "orange"])).toEqual(false);
   });
 })
-
-
-/* Not game logic (UI) */
-// start game modal, end game model, help modal are initialized in the DOM
-// Can navigate to page routes
-// no info is given away in the URL slug or in the code inspector
-// Enable submit only when guess length is 4
-// Disable submit button when feedback is being processed
-// Delete button --> when user clicks, last guess is removed
-// Delete button disabled when guess length is 0
-// can't continue guessing in win/loss/end game state
